@@ -1,13 +1,13 @@
-import { kv } from '@vercel/kv';
+import { Redis } from "@upstash/redis";
 
-export default async function handler(req, res) {
-  const token = req.query.t;
-  if(!token){
-    return res.status(400).json({ error:'Missing token' });
-  }
+const redis = Redis.fromEnv();
 
-  const opens = await kv.get(`opens:${token}`) || 0;
-  await kv.set(`opens:${token}`, opens + 1);
+export default async function handler(req, res){
+  const token=(req.query.t || "").trim();
+  if(!token) return res.status(400).json({ error:"Missing token" });
 
-  res.status(200).json({ ok:true });
+  await redis.incr(`open_count:${token}`);
+  await redis.set(`last_open:${token}`, new Date().toISOString());
+
+  return res.status(200).json({ ok:true });
 }
