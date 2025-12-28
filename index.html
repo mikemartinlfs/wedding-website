@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Michael & Avneet</title>
+
+    <!-- IMPORTANT: this must match your file name exactly -->
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <nav id="sideNav" class="side-nav">
+        <a href="#invite" data-id="invite" class="active">Invitation</a>
+        <a href="#details" data-id="details">Details</a>
+        <a href="#travel" data-id="travel">Travel</a>
+        <a href="#dress" data-id="dress">Dress Code</a>
+        <a href="#registry" data-id="registry">Registry</a>
+    </nav>
+
+    <main>
+        <section id="invite" class="panel parallax hero" style="--bg:url('assets/hero.jpg')">
+            <div class="panel-inner">
+
+
+
+                <h1>Michael & Avneet</h1>
+                <p class="meta">November 9, 2025 · Luray, Virginia</p>
+
+                <div id="invalidToken" class="notice hidden">
+                    This invitation link is missing or invalid.
+                </div>
+
+                <div id="rsvpView" class="card hidden">
+                    <p class="lead">You are invited. RSVP below.</p>
+
+                    <form id="rsvpForm" class="form">
+                        <div class="grid">
+                            <label>
+                                Attending?
+                                <select name="attending" required>
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Number attending
+                                <input name="guest_count" type="number" min="0" max="10" required />
+                            </label>
+
+                            <label class="full">
+                                Ages (comma-separated)
+                                <input name="guest_ages" placeholder="34, 33, 6" />
+                            </label>
+
+                            <label class="full">
+                                Notes / dietary / anything else
+                                <textarea name="notes" rows="3"></textarea>
+                            </label>
+                        </div>
+
+                        <button type="submit">Submit RSVP</button>
+                        <div id="submitMsg" class="notice hidden"></div>
+                    </form>
+                </div>
+
+                <div id="confirmedView" class="card hidden">
+                    <h2 style="margin-top:0;">RSVP received</h2>
+                    <p class="meta" id="confirmedMeta"></p>
+
+                    <div class="card" style="margin-top:12px;">
+                        <div><strong>Attending:</strong> <span id="c_attending"></span></div>
+                        <div><strong>Guest count:</strong> <span id="c_guest_count"></span></div>
+                        <div><strong>Ages:</strong> <span id="c_guest_ages"></span></div>
+                        <div><strong>Notes:</strong> <span id="c_notes"></span></div>
+                    </div>
+                </div>
+
+                <p class="hint">Scroll for details.</p>
+
+
+
+
+            </div>
+
+                <p class="hint">Scroll for details.</p>
+            </div>
+        </section>
+
+        <section id="details" class="panel parallax" style="--bg:url('assets/details.jpg')">
+            <div class="panel-inner">
+                <h2>Details</h2>
+                <p>Ceremony time, reception time, venue address, etc.</p>
+            </div>
+        </section>
+
+        <section id="travel" class="panel parallax" style="--bg:url('assets/travel.jpg')">
+            <div class="panel-inner">
+                <h2>Travel</h2>
+                <p>Hotel block, airports, parking, shuttle info.</p>
+            </div>
+        </section>
+
+        <section id="dress" class="panel parallax" style="--bg:url('assets/dress.jpg')">
+            <div class="panel-inner">
+                <h2>Dress code</h2>
+                <p>Short guidance + any cultural notes.</p>
+            </div>
+        </section>
+
+        <section id="registry" class="panel parallax" style="--bg:url('assets/registry.jpg')">
+            <div class="panel-inner">
+                <h2>Registry</h2>
+                <p>Registry links (later).</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- IMPORTANT: loads your JS -->
+    <script src="app.js"></script>
+</body>
+</html>
