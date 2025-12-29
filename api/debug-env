@@ -1,0 +1,7 @@
+export default async function handler(req, res){
+  res.status(200).json({
+    have_url: !!process.env.UPSTASH_REDIS_REST_URL,
+    have_token: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+    url_prefix: (process.env.UPSTASH_REDIS_REST_URL || "").slice(0, 12)
+  });
+}
