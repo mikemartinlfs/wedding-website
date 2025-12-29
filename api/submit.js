@@ -1,6 +1,9 @@
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN
+});
 
 function canEditNow(){
   const deadline=(process.env.RSVP_EDIT_DEADLINE || "").trim();
