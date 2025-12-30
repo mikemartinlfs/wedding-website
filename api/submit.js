@@ -1,9 +1,4 @@
-import { Redis } from "@upstash/redis";
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN
-});
+import { getRedis } from "./_redis.js";
 
 function canEditNow(){
   const deadline=(process.env.RSVP_EDIT_DEADLINE || "").trim();
@@ -14,28 +9,34 @@ function canEditNow(){
 }
 
 export default async function handler(req, res){
-  if(req.method !== "POST") return res.status(405).end();
+  try{
+    if(req.method !== "POST") return res.status(405).end();
 
-  const body = req.body || {};
-  const token=(body.token || "").trim();
-  if(!token) return res.status(400).json({ error:"Missing token" });
+    const redis = getRedis(true);
 
-  const invite = await redis.get(`invite:${token}`);
-  if(!invite) return res.status(404).json({ error:"Invalid token" });
+    const body=req.body || {};
+    const token=(body.token || "").trim();
+    if(!token) return res.status(400).json({ error:"Missing token" });
 
-  const existing = await redis.get(`rsvp:${token}`);
-  if(existing && !canEditNow()) return res.status(403).json({ error:"Edits are closed." });
+    const invite = await redis.get(`invite:${token}`);
+    if(!invite) return res.status(404).json({ error:"Invalid token" });
 
-  const payload = {
-    attending: String(body.attending || "").trim(),
-    guest_count: String(body.guest_count || "").trim(),
-    guest_ages: String(body.guest_ages || "").trim(),
-    notes: String(body.notes || "").trim(),
-    updated_at: new Date().toISOString()
-  };
+    const existing = await redis.get(`rsvp:${token}`);
+    if(existing && !canEditNow()) return res.status(403).json({ error:"Edits are closed." });
 
-  await redis.set(`rsvp:${token}`, payload);
-  await redis.set(`submitted_at:${token}`, new Date().toISOString());
+    const payload = {
+      attending: String(body.attending || "").trim(),
+      guest_count: String(body.guest_count || "").trim(),
+      guest_ages: String(body.guest_ages || "").trim(),
+      notes: String(body.notes || "").trim(),
+      updated_at: new Date().toISOString()
+    };
 
-  return res.status(200).json({ ok:true });
+    await redis.set(`rsvp:${token}`, payload);
+    await redis.set(`submitted_at:${token}`, new Date().toISOString());
+
+    return res.status(200).json({ ok:true });
+  } catch(e){
+    return res.status(500).json({ error: e?.message || String(e) });
+  }
 }
