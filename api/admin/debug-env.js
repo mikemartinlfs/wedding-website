@@ -4,10 +4,11 @@ export default async function handler(req, res){
 
   res.status(200).json({
     have_admin_key: !!process.env.ADMIN_KEY,
-    have_url: !!process.env.UPSTASH_REDIS_REST_URL,
-    have_token: !!process.env.UPSTASH_REDIS_REST_TOKEN,
-    url_prefix: (process.env.UPSTASH_REDIS_REST_URL || "").slice(0, 12),
-    token_len: (process.env.UPSTASH_REDIS_REST_TOKEN || "").length,
-    deadline: process.env.RSVP_EDIT_DEADLINE || null
+    have_deadline: !!process.env.RSVP_EDIT_DEADLINE,
+    have_kv_url: !!process.env.KV_URL,
+    have_kv_rest_url: !!process.env.KV_REST_API_URL,
+    have_kv_rest_token: !!process.env.KV_REST_API_TOKEN,
+    have_kv_ro_token: !!process.env.KV_REST_API_READ_ONLY_TOKEN,
+    have_redis_url: !!process.env.REDIS_URL
   });
 }
