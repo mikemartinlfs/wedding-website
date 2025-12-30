@@ -1,9 +1,4 @@
-import { Redis } from "@upstash/redis";
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN
-});
+import { getRedis } from "./_redis.js";
 
 function canEditNow(){
   const deadline=(process.env.RSVP_EDIT_DEADLINE || "").trim();
@@ -14,21 +9,27 @@ function canEditNow(){
 }
 
 export default async function handler(req, res){
-  const token=(req.query.t || "").trim();
-  if(!token) return res.status(400).json({ error:"Missing token" });
+  try{
+    const redis = getRedis(false);
 
-  const invite = await redis.get(`invite:${token}`);
-  if(!invite) return res.status(404).json({ error:"Invalid token" });
+    const token=(req.query.t || "").trim();
+    if(!token) return res.status(400).json({ error:"Missing token" });
 
-  const rsvp = await redis.get(`rsvp:${token}`);
+    const invite = await redis.get(`invite:${token}`);
+    if(!invite) return res.status(404).json({ error:"Invalid token" });
 
-  return res.status(200).json({
-    ok:true,
-    token,
-    name: invite?.name || "",
-    email: invite?.email || "",
-    submitted: !!rsvp,
-    can_edit: !!rsvp && canEditNow(),
-    response: rsvp || null
-  });
+    const rsvp = await redis.get(`rsvp:${token}`);
+
+    return res.status(200).json({
+      ok:true,
+      token,
+      name: invite?.name || "",
+      email: invite?.email || "",
+      submitted: !!rsvp,
+      can_edit: !!rsvp && canEditNow(),
+      response: rsvp || null
+    });
+  } catch(e){
+    return res.status(500).json({ error: e?.message || String(e) });
+  }
 }
