@@ -18,10 +18,10 @@ export default async function handler(req, res){
     for(const inv of invites){
       const token=String(inv?.token || "").trim();
       const name=String(inv?.name || "").trim();
-      const email=String(inv?.email || "").trim();
-      if(!token || !name || !email) continue;
+      const contact=String(inv?.contact || "").trim();
+      if(!token || !name || !contact) continue;
 
-      await redis.set(`invite:${token}`, { name, email });
+      await redis.set(`invite:${token}`, { name, contact });
       written++;
     }
 
