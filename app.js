@@ -55,7 +55,7 @@ async function apiPost(url, body){
 }
 
 function setHeader(name){
-  if(inviteNameEl) inviteNameEl.textContent = name ? `${name}, you are invited.` : "You are invited.";
+  if(inviteNameEl) inviteNameEl.textContent = name ? `${name}, your place in our story starts here.` : "Your place in our story starts here.";
   if(inviteSubEl) inviteSubEl.textContent = "Please RSVP below.";
 }
 
