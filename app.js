@@ -56,7 +56,6 @@ async function apiPost(url, body){
 
 function setHeader(name){
   if(inviteNameEl) inviteNameEl.textContent = name ? `${name}, will you join us in this new chapter?` : "Will you join us in this new chapter?";
-  if(inviteSubEl) inviteSubEl.textContent = "Please RSVP below.";
 }
 
 function setFormValues(resp){
