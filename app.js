@@ -132,9 +132,10 @@ async function refreshStatus(){
   }
 
   const info=s.data;
-
-  if(ageBlock) show(ageBlock, !!info.has_children);
   
+  const guestCountVal=Number(rsvpForm?.guest_count?.value || info?.defaults?.guest_count || 0);
+  if(ageBlock) show(ageBlock, !!info.has_children && guestCountVal > 1);
+
   if(!info.submitted){
     showRsvp(info.name);
     setFormValues(info.defaults || null);
