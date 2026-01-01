@@ -147,14 +147,14 @@ async function refreshStatus(){
 
   const info=s.data;
   
-  const guestCountVal=Number(rsvpForm?.guest_count?.value || info?.defaults?.guest_count || 0);
-  if(ageBlock) show(ageBlock, !!info.has_children && guestCountVal > 1);
+  // const guestCountVal=Number(rsvpForm?.guest_count?.value || info?.defaults?.guest_count || 0);
+  // if(ageBlock) show(ageBlock, !!info.has_children && guestCountVal > 1);
 
   HAS_CHILDREN=!!info.has_children;
   if(!info.submitted){
     showRsvp(info.name);
     setFormValues(info.defaults || null);
-    if(!info.has_children && rsvpForm?.guest_ages) rsvpForm.guest_ages.value="";
+    // if(!info.has_children && rsvpForm?.guest_ages) rsvpForm.guest_ages.value="";
   } else {
     showConfirmed(info.name, info.response, info.can_edit);
   }
