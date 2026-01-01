@@ -51,12 +51,19 @@
                 <input name="guest_count" type="number" min="0" max="10" required />
               </label>
 
-              <label class="full">
-                There will be a supervised kids’ area at the reception.<br>
-                To prepare properly for our smallest adventurers, please list your children’s ages separated by commas.
-                <em>(This information is required by the company managing the area.)</em>
-                <input name="guest_ages" placeholder="0" />
-              </label>
+              <div id="ageBlock" class="full hidden">
+                <p class="meta" style="margin:0 0 6px 0;">There will be a supervised kids’ area at the reception.</p>
+                <p class="meta" style="margin:0 0 10px 0;">
+                  To prepare properly for our smallest adventurers, please list your children’s ages separated by commas.
+                  (This information is required by the company managing the area.)
+                </p>
+              
+                <label class="full" style="margin:0;">
+                  Children’s ages (comma-separated)
+                  <input name="guest_ages" placeholder="6, 4, 2" />
+                </label>
+              </div>
+
 
               <label class="full">
                 Additional notes (dietary restrictions, accomodations needed, etc...)
