@@ -25,6 +25,7 @@ const inviteSubEl=document.getElementById("inviteSub");
 
 const rsvpForm=document.getElementById("rsvpForm");
 const ageBlock=document.getElementById("ageBlock");
+let HAS_CHILDREN=false;
 const submitMsg=document.getElementById("submitMsg");
 
 const confirmedMeta=document.getElementById("confirmedMeta");
@@ -116,6 +117,19 @@ function showConfirmed(name, resp, canEdit){
   clearSubmitMsg();
 }
 
+function updateAgeBlock(){
+  if(!ageBlock || !rsvpForm) return;
+
+  const gc=parseInt(String(rsvpForm.guest_count?.value || "0"), 10);
+  const guestCount=Number.isNaN(gc) ? 0 : gc;
+
+  const shouldShow=HAS_CHILDREN && guestCount > 1;
+  ageBlock.classList.toggle("hidden", !shouldShow);
+
+  if(!shouldShow && rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
+}
+
+
 async function refreshStatus(){
   if(!token){
     showInvalid("This invitation link is missing or invalid.");
@@ -136,6 +150,7 @@ async function refreshStatus(){
   const guestCountVal=Number(rsvpForm?.guest_count?.value || info?.defaults?.guest_count || 0);
   if(ageBlock) show(ageBlock, !!info.has_children && guestCountVal > 1);
 
+  HAS_CHILDREN=!!info.has_children;
   if(!info.submitted){
     showRsvp(info.name);
     setFormValues(info.defaults || null);
@@ -143,7 +158,7 @@ async function refreshStatus(){
   } else {
     showConfirmed(info.name, info.response, info.can_edit);
   }
-
+  updateAgeBlock();
 
   return info;
 }
@@ -204,5 +219,8 @@ rsvpForm?.addEventListener("submit", async (e)=>{
 
   await refreshStatus();
 });
+
+rsvpForm?.guest_count?.addEventListener("input", updateAgeBlock);
+rsvpForm?.attending?.addEventListener("change", updateAgeBlock);
 
 refreshStatus();
