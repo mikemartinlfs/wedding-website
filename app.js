@@ -24,6 +24,7 @@ const inviteNameEl=document.getElementById("inviteName");
 const inviteSubEl=document.getElementById("inviteSub");
 
 const rsvpForm=document.getElementById("rsvpForm");
+const ageBlock=document.getElementById("ageBlock");
 const submitMsg=document.getElementById("submitMsg");
 
 const confirmedMeta=document.getElementById("confirmedMeta");
@@ -132,12 +133,16 @@ async function refreshStatus(){
 
   const info=s.data;
 
+  if(ageBlock) show(ageBlock, !!info.has_children);
+  
   if(!info.submitted){
     showRsvp(info.name);
-    setFormValues(null);
+    setFormValues(info.defaults || null);
+    if(!info.has_children && rsvpForm?.guest_ages) rsvpForm.guest_ages.value="";
   } else {
     showConfirmed(info.name, info.response, info.can_edit);
   }
+
 
   return info;
 }
