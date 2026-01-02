@@ -123,7 +123,7 @@ p{ margin:0 0 12px 0; }
   background-image:
     /* warm golden wash */
     linear-gradient(
-      rgba(82,58,24,.22),
+      rgba(90,62,20,.26),
       rgba(32,22,10,.46)
     ),
     var(--bg);
