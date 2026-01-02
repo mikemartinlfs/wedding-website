@@ -121,14 +121,18 @@ p{ margin:0 0 12px 0; }
 /* Parallax stays; upgrade overlay: vignette + texture + mist */
 .panel.parallax{
   background-image:
-    radial-gradient(90% 80% at 50% 30%, rgba(0,0,0,.10), rgba(0,0,0,.55)),
-    linear-gradient(rgba(10,16,12,.18), rgba(10,16,12,.44)),
+    /* warm golden wash */
+    linear-gradient(
+      rgba(82,58,24,.22),
+      rgba(32,22,10,.46)
+    ),
     var(--bg);
   background-position:center;
   background-size:cover;
   background-attachment:fixed;
-  background-color:#1a2a1f;
+  background-color:#2a1f12;
 }
+
 
 /* subtle “film grain” texture (no external image needed) */
 .panel.parallax::before{
