@@ -147,6 +147,26 @@ p{ margin:0 0 12px 0; }
   pointer-events:none;
 }
 
+/* Add a vignette on ::after */
+.panel.parallax::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+
+  /* Center stays normal until ~55%, then darkens,
+     and only the last ~1-2% goes near-black */
+  background: radial-gradient(
+    circle at center,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,0) 55%,
+    rgba(0,0,0,.35) 78%,
+    rgba(0,0,0,.70) 92%,
+    rgba(0,0,0,.95) 98%,
+    rgba(0,0,0,1) 100%
+  );
+}
+
 .panel-inner{
   width:min(var(--maxW), 100%);
   border-radius:var(--radiusPanel);
