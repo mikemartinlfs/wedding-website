@@ -1,24 +1,27 @@
 :root{
-  --fg:#f5f1e6;
-  --muted:rgba(245,241,230,.75);
+  --fg:#1f1f1f;
+  --muted:rgba(31,31,31,.68);
+  --border:rgba(0,0,0,.10);
 
-  --wall:#0b0b0b;
-  --frame:#0f0f10;
-  --frameBorder:rgba(0,0,0,.75);
+  /* Text panel surface (very light / minimal) */
+  --panelGlass:rgba(255,255,255,.10);
+  --panelGlassBorder:rgba(255,255,255,.16);
 
-  --card:rgba(18,18,18,.58);
-  --cardBorder:rgba(255,255,255,.14);
-
-  --shadow:0 26px 80px rgba(0,0,0,.55);
-  --shadowSoft:0 14px 36px rgba(0,0,0,.35);
-
-  --radius:22px;
-  --maxW:920px;
+  /* Background behind everything */
+  --pageBg:#0f1a14;
 
   /* Window sizing */
   --winW:min(980px, 86vw);
   --winH:min(72vh, 680px);
-  --frameThickness:14px;
+  --winRadius:22px;
+  --winFrame:14px;
+
+  /* Layout */
+  --maxW:920px;
+
+  /* Shadows */
+  --shadowWin:0 26px 80px rgba(0,0,0,.45);
+  --shadowSoft:0 18px 46px rgba(0,0,0,.25);
 }
 
 *{ box-sizing:border-box; }
@@ -26,114 +29,153 @@ html,body{ height:100%; }
 
 body{
   margin:0;
-  background:var(--wall);
   color:var(--fg);
-  font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background:var(--pageBg);
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
 
-.hidden{ display:none !important; }
-
 h1,h2{
-  font-family:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-family: Georgia,"Times New Roman",serif;
   letter-spacing:.2px;
   margin:0 0 10px 0;
 }
 
-h1{ font-size:48px; line-height:1.02; }
-h2{ font-size:32px; }
-
 p{ margin:0 0 12px 0; }
-.meta{ color:var(--muted); font-size:14px; }
-.lead{ font-size:16px; line-height:1.55; color:rgba(245,241,230,.92); }
-.hint{ margin-top:18px; color:var(--muted); font-size:13px; }
+.meta{ color:var(--muted); }
+.lead{ font-size:16px; line-height:1.45; }
+.hint{ margin-top:18px; color:var(--muted); }
+.hidden{ display:none; }
 
-/* Optional: makes the “one window at a time” feel real */
-html{
-  scroll-snap-type:y mandatory;
+/* -------- Side nav -------- */
+.side-nav{
+  position:fixed;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:80;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;
+  background:rgba(0,0,0,.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
+.side-nav a{
+  text-decoration:none;
+  color:rgba(255,255,255,.88);
+  font-size:14px;
+  padding:8px 10px;
+  border-radius:12px;
+  white-space:nowrap;
+}
+
+.side-nav a.active{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+}
+
+/* -------- Base panel -------- */
 .panel{
   min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:84px 22px;
+  padding:86px 22px;
   position:relative;
-  background:var(--wall);
-  scroll-snap-align:start;
+}
+
+/* =========================================================
+   WINDOW PANELS (image-only “preview” section)
+   Use in HTML: <section class="panel window" style="--bg:url('...')"></section>
+   ========================================================= */
+.panel.window{
+  background:var(--pageBg);
   overflow:hidden;
 }
 
-/*
-  Window effect:
-  - the SECTION is a dark wall
-  - the ::before pseudo-element is the actual “window” showing the image
-  - no gradients, no tints
-*/
-.panel.parallax::before{
+/* The literal framed “window” */
+.panel.window::before{
   content:"";
   position:absolute;
-  left:50%;
   top:50%;
+  left:50%;
   width:var(--winW);
   height:var(--winH);
   transform:translate(-50%,-50%);
-  border-radius:var(--radius);
+  border-radius:var(--winRadius);
 
   background-image:var(--bg);
   background-size:cover;
   background-position:center;
   background-attachment:fixed;
+  background-color:#000;
 
-  /* frame */
-  border:var(--frameThickness) solid var(--frame);
-  box-shadow:
-    0 0 0 1px var(--frameBorder),
-    var(--shadow);
-
-  /* subtle “glass” depth without color */
-  outline:1px solid rgba(255,255,255,.06);
+  border:var(--winFrame) solid rgba(14,14,16,.95);
+  box-shadow:0 0 0 1px rgba(0,0,0,.60), var(--shadowWin);
 }
 
-/* Inner rim to make it feel like a real inset frame */
-.panel.parallax::after{
+/* Inner rim for depth */
+.panel.window::after{
   content:"";
   position:absolute;
-  left:50%;
   top:50%;
-  width:calc(var(--winW) - (var(--frameThickness) * 2));
-  height:calc(var(--winH) - (var(--frameThickness) * 2));
+  left:50%;
+  width:calc(var(--winW) - (var(--winFrame) * 2));
+  height:calc(var(--winH) - (var(--winFrame) * 2));
   transform:translate(-50%,-50%);
-  border-radius:calc(var(--radius) - 10px);
+  border-radius:calc(var(--winRadius) - 10px);
   pointer-events:none;
-
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.08),
+    inset 0 0 0 1px rgba(255,255,255,.10),
     inset 0 18px 40px rgba(0,0,0,.22);
 }
 
-/* Content card sits in front of the window */
-.panel-inner{
-  width:min(var(--maxW), 100%);
-  border-radius:var(--radius);
-  background:var(--card);
-  border:1px solid var(--cardBorder);
-  box-shadow:var(--shadowSoft);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding:30px;
-  position:relative;
-  z-index:3;
+/* =========================================================
+   TEXT PANELS (content between images, minimal background)
+   Use in HTML: <section class="panel text"><div class="panel-inner">...</div></section>
+   ========================================================= */
+.panel.text{
+  background:transparent;
 }
 
+/* Minimal/near-transparent content surface */
+.panel.text .panel-inner{
+  width:min(var(--maxW), 100%);
+  border-radius:22px;
+  padding:28px;
+  background:var(--panelGlass);
+  border:1px solid var(--panelGlassBorder);
+  box-shadow:var(--shadowSoft);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position:relative;
+  z-index:2;
+}
+
+/* If you truly want NO background at all, uncomment this:
+.panel.text .panel-inner{
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  padding:0;
+}
+*/
+
+/* -------- Cards / Form -------- */
 .card{
   margin-top:18px;
   padding:16px;
-  border-radius:18px;
-  background:rgba(10,10,10,.55);
   border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;
+  background:rgba(0,0,0,.30);
 }
 
 .form{ margin-top:12px; }
@@ -150,22 +192,22 @@ label{
   display:flex;
   flex-direction:column;
   gap:6px;
-  font-size:13px;
-  color:rgba(245,241,230,.86);
+  font-size:14px;
+  color:rgba(255,255,255,.88);
 }
 
 input,select,textarea{
   border:1px solid rgba(255,255,255,.16);
   border-radius:14px;
-  padding:11px 12px;
+  padding:10px 12px;
   font-size:14px;
   outline:none;
-  background:rgba(0,0,0,.35);
-  color:var(--fg);
+  background:rgba(0,0,0,.25);
+  color:#fff;
 }
 
 input:focus,select:focus,textarea:focus{
-  border-color:rgba(255,255,255,.35);
+  border-color:rgba(255,255,255,.34);
   box-shadow:0 0 0 4px rgba(255,255,255,.10);
 }
 
@@ -173,82 +215,31 @@ button{
   margin-top:14px;
   border:0;
   border-radius:14px;
-  padding:12px 16px;
+  padding:12px 14px;
   background:#e6d5aa;
   color:#1a140a;
   font-size:14px;
   font-weight:650;
   cursor:pointer;
-  box-shadow:0 14px 28px rgba(0,0,0,.35);
+  box-shadow:0 14px 28px rgba(0,0,0,.30);
 }
 
 .notice{
   margin-top:12px;
   padding:10px 12px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.16);
-  background:rgba(0,0,0,.35);
-  color:rgba(245,241,230,.92);
-}
-
-/* Nav (kept simple, not the focus) */
-.side-nav{
-  position:fixed;
-  left:16px;
-  top:50%;
-  transform:translateY(-50%);
-  z-index:80;
-
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-
-  padding:10px;
-  border-radius:18px;
-
-  background:rgba(0,0,0,.55);
   border:1px solid rgba(255,255,255,.14);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-radius:14px;
+  background:rgba(0,0,0,.25);
+  color:rgba(255,255,255,.90);
 }
 
-.side-nav a{
-  text-decoration:none;
-  color:rgba(245,241,230,.90);
-  font-size:14px;
-  padding:8px 10px;
-  border-radius:12px;
-  white-space:nowrap;
-}
-
-.side-nav a.active{
-  background:rgba(255,255,255,.14);
-}
-
-/* Mobile */
+/* -------- Mobile -------- */
 @media (max-width:860px){
-  html{ scroll-snap-type:y mandatory; }
-
-  h1{ font-size:38px; }
-  h2{ font-size:28px; }
-
   .grid{ grid-template-columns:1fr; }
-  .panel{ padding:72px 14px; }
+  .panel{ padding:76px 14px; }
 
-  :root{
-    --winW:min(94vw, 980px);
-    --winH:min(66vh, 560px);
-    --frameThickness:12px;
-  }
-
-  /* mobile browsers hate fixed backgrounds */
-  .panel.parallax::before{
-    background-attachment:scroll;
-  }
-
-  .panel-inner{
-    padding:22px 16px;
-  }
+  /* mobile browsers: fixed attachment unreliable */
+  .panel.window::before{ background-attachment:scroll; }
 
   .side-nav{
     left:10px;
@@ -260,5 +251,6 @@ button{
     overflow:auto;
     max-width:calc(100vw - 20px);
     gap:6px;
+    justify-content:flex-start;
   }
 }
