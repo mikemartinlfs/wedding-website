@@ -1,16 +1,18 @@
 :root{
-  --fg:#1f1f1f;
-  --muted:rgba(31,31,31,.68);
-  --border:rgba(0,0,0,.10);
+  /* Typography */
+  --fontBody: Inter, system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  --fontHead: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
-  /* Text panel surface (very light / minimal) */
-  --panelGlass:rgba(255,255,255,.10);
-  --panelGlassBorder:rgba(255,255,255,.16);
-
-  /* Background behind everything */
+  /* Palette */
   --pageBg:#0f1a14;
+  --fg:#f4f0e6;
+  --muted:rgba(244,240,230,.74);
 
-  /* Window sizing */
+  /* Surfaces */
+  --glass:rgba(10,10,10,.18);              /* minimal background for text cards */
+  --glassBorder:rgba(255,255,255,.14);
+
+  /* Window frame */
   --winW:min(980px, 86vw);
   --winH:min(72vh, 680px);
   --winRadius:22px;
@@ -21,7 +23,7 @@
 
   /* Shadows */
   --shadowWin:0 26px 80px rgba(0,0,0,.45);
-  --shadowSoft:0 18px 46px rgba(0,0,0,.25);
+  --shadowSoft:0 18px 46px rgba(0,0,0,.28);
 }
 
 *{ box-sizing:border-box; }
@@ -29,41 +31,73 @@ html,body{ height:100%; }
 
 body{
   margin:0;
-  color:var(--fg);
   background:var(--pageBg);
-  font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  color:var(--fg);
+  font-family:var(--fontBody);
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
 
+.hidden{ display:none !important; }
+
 h1,h2{
-  font-family: Georgia,"Times New Roman",serif;
+  font-family:var(--fontHead);
   letter-spacing:.2px;
   margin:0 0 10px 0;
+  color:var(--fg);
 }
 
-p{ margin:0 0 12px 0; }
-.meta{ color:var(--muted); }
-.lead{ font-size:16px; line-height:1.45; }
-.hint{ margin-top:18px; color:var(--muted); }
-.hidden{ display:none; }
+h1{ font-size:52px; line-height:1.02; font-weight:700; }
+h2{ font-size:32px; line-height:1.1; font-weight:600; }
 
-/* -------- Side nav -------- */
+p{ margin:0 0 12px 0; }
+
+.meta{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.lead{
+  font-size:16px;
+  line-height:1.55;
+  color:rgba(244,240,230,.92);
+}
+
+.hint{
+  margin-top:18px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* Divider (you already use this class) */
+.divider{
+  margin:18px 0 14px 0;
+  height:1px;
+  background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.22), rgba(255,255,255,0));
+  opacity:.9;
+}
+
+/* =========================
+   Side nav
+   ========================= */
 .side-nav{
   position:fixed;
   left:14px;
   top:50%;
   transform:translateY(-50%);
   z-index:80;
+
   display:flex;
   flex-direction:column;
   gap:8px;
+
   padding:10px;
-  border:1px solid rgba(255,255,255,.14);
   border-radius:16px;
+
+  border:1px solid rgba(255,255,255,.14);
   background:rgba(0,0,0,.35);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .side-nav a{
@@ -73,14 +107,22 @@ p{ margin:0 0 12px 0; }
   padding:8px 10px;
   border-radius:12px;
   white-space:nowrap;
+  transition:background .12s ease, transform .12s ease;
+}
+
+.side-nav a:hover{
+  background:rgba(255,255,255,.10);
+  transform:translateX(1px);
 }
 
 .side-nav a.active{
-  background:rgba(255,255,255,.14);
+  background:rgba(255,255,255,.16);
   color:#fff;
 }
 
-/* -------- Base panel -------- */
+/* =========================
+   Panels (base)
+   ========================= */
 .panel{
   min-height:100vh;
   display:flex;
@@ -90,16 +132,15 @@ p{ margin:0 0 12px 0; }
   position:relative;
 }
 
-/* =========================================================
-   WINDOW PANELS (image-only “preview” section)
-   Use in HTML: <section class="panel window" style="--bg:url('...')"></section>
-   ========================================================= */
+/* =========================
+   Window panels (image only)
+   ========================= */
 .panel.window{
   background:var(--pageBg);
   overflow:hidden;
 }
 
-/* The literal framed “window” */
+/* the framed image window */
 .panel.window::before{
   content:"";
   position:absolute;
@@ -120,7 +161,7 @@ p{ margin:0 0 12px 0; }
   box-shadow:0 0 0 1px rgba(0,0,0,.60), var(--shadowWin);
 }
 
-/* Inner rim for depth */
+/* inner rim / depth */
 .panel.window::after{
   content:"";
   position:absolute;
@@ -136,48 +177,61 @@ p{ margin:0 0 12px 0; }
     inset 0 18px 40px rgba(0,0,0,.22);
 }
 
-/* =========================================================
-   TEXT PANELS (content between images, minimal background)
-   Use in HTML: <section class="panel text"><div class="panel-inner">...</div></section>
-   ========================================================= */
+/* Optional: slight fade at top/bottom of the whole viewport so windows feel “separated” */
+.panel.window{
+  box-shadow: inset 0 60px 90px rgba(15,26,20,.55), inset 0 -60px 90px rgba(15,26,20,.55);
+}
+
+/* =========================
+   Text panels (between images)
+   ========================= */
 .panel.text{
   background:transparent;
 }
 
-/* Minimal/near-transparent content surface */
+/* minimal readable “glass” */
 .panel.text .panel-inner{
   width:min(var(--maxW), 100%);
   border-radius:22px;
   padding:28px;
-  background:var(--panelGlass);
-  border:1px solid var(--panelGlassBorder);
+
+  background:var(--glass);
+  border:1px solid var(--glassBorder);
   box-shadow:var(--shadowSoft);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
   position:relative;
   z-index:2;
 }
 
-/* If you truly want NO background at all, uncomment this:
-.panel.text .panel-inner{
-  background:transparent;
-  border:0;
-  box-shadow:none;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  padding:0;
+/* A tiny top rule gives it a designed invitation feel without making it a heavy card */
+.panel.text .panel-inner::before{
+  content:"";
+  position:absolute;
+  left:22px;
+  right:22px;
+  top:14px;
+  height:1px;
+  background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.20), rgba(255,255,255,0));
+  opacity:.9;
 }
-*/
 
-/* -------- Cards / Form -------- */
+/* =========================
+   Cards inside your RSVP/confirmed areas
+   ========================= */
 .card{
   margin-top:18px;
   padding:16px;
-  border:1px solid rgba(255,255,255,.14);
   border-radius:18px;
-  background:rgba(0,0,0,.30);
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.22);
 }
 
+/* =========================
+   Forms
+   ========================= */
 .form{ margin-top:12px; }
 
 .grid{
@@ -202,8 +256,13 @@ input,select,textarea{
   padding:10px 12px;
   font-size:14px;
   outline:none;
-  background:rgba(0,0,0,.25);
-  color:#fff;
+
+  background:rgba(0,0,0,.16);
+  color:rgba(255,255,255,.92);
+}
+
+input::placeholder,textarea::placeholder{
+  color:rgba(255,255,255,.50);
 }
 
 input:focus,select:focus,textarea:focus{
@@ -211,35 +270,62 @@ input:focus,select:focus,textarea:focus{
   box-shadow:0 0 0 4px rgba(255,255,255,.10);
 }
 
+/* Buttons */
 button{
   margin-top:14px;
   border:0;
   border-radius:14px;
   padding:12px 14px;
+
   background:#e6d5aa;
   color:#1a140a;
+
   font-size:14px;
   font-weight:650;
   cursor:pointer;
   box-shadow:0 14px 28px rgba(0,0,0,.30);
+  transition:filter .12s ease, transform .06s ease;
 }
 
+button:hover{ filter:brightness(1.03); }
+button:active{ transform:translateY(1px); }
+
+/* Notices */
 .notice{
   margin-top:12px;
   padding:10px 12px;
-  border:1px solid rgba(255,255,255,.14);
   border-radius:14px;
-  background:rgba(0,0,0,.25);
-  color:rgba(255,255,255,.90);
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.18);
+  color:rgba(255,255,255,.92);
 }
 
-/* -------- Mobile -------- */
+/* Make <em> readable on dark */
+em{ color:rgba(244,240,230,.86); }
+
+/* =========================
+   Mobile
+   ========================= */
 @media (max-width:860px){
+  h1{ font-size:40px; }
+  h2{ font-size:28px; }
+
   .grid{ grid-template-columns:1fr; }
   .panel{ padding:76px 14px; }
 
-  /* mobile browsers: fixed attachment unreliable */
+  /* mobile browsers: fixed attachment is unreliable */
   .panel.window::before{ background-attachment:scroll; }
+
+  .panel.text .panel-inner{
+    padding:22px 16px;
+    border-radius:18px;
+  }
+
+  .panel.text .panel-inner::before{
+    left:16px;
+    right:16px;
+    top:12px;
+  }
 
   .side-nav{
     left:10px;
@@ -253,4 +339,6 @@ button{
     gap:6px;
     justify-content:flex-start;
   }
+
+  .side-nav a{ padding:10px 12px; }
 }
