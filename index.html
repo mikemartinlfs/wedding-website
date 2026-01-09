@@ -1,12 +1,11 @@
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Michael & Avneet's Wedding Website</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -20,7 +19,12 @@
   </nav>
 
   <main>
-    <section id="invite" class="panel parallax hero" style="--bg:url('assets/hero.jpg')">
+
+    <!-- WINDOW: Hero image preview -->
+    <section class="panel window" style="--bg:url('assets/hero.jpg')"></section>
+
+    <!-- TEXT: Invitation / RSVP -->
+    <section id="invite" class="panel text hero">
       <div class="panel-inner">
         <h1>One Invitation to Gather Them All</h1>
         <h2>Michael & Avneet's Wedding</h2>
@@ -59,13 +63,12 @@
                   To prepare properly for our smallest adventurers, please list your children’s ages separated by commas.
                   (This information is required by the company managing the area.)
                 </p>
-              
+
                 <label class="full" style="margin:0;">
                   Children’s ages (comma-separated)
                   <input name="guest_ages" placeholder="6, 4, 2" />
                 </label>
               </div>
-
 
               <label class="full">
                 Any special requests for your journey? <em>(Dietary needs, accessibility, or anything else we should know.)</em>
@@ -89,42 +92,57 @@
             <div><strong>Notes:</strong> <span id="c_notes"></span></div>
           </div>
 
-          <!-- Optional: edit button (only show if can_edit=true) -->
           <button id="editBtn" class="hidden" type="button" style="margin-top:12px;">Edit RSVP</button>
         </div>
 
         <p class="hint">The adventure continues below — scroll for ceremony and reception details.</p>
-
       </div>
     </section>
 
-    <section id="details" class="panel parallax" style="--bg:url('assets/details.jpg')">
+    <!-- WINDOW: Details image preview -->
+    <section class="panel window" style="--bg:url('assets/details.jpg')"></section>
+
+    <!-- TEXT: Details -->
+    <section id="details" class="panel text">
       <div class="panel-inner">
         <h2>Details</h2>
         <p>Ceremony time, reception time, venue address, etc.</p>
       </div>
     </section>
 
-    <section id="travel" class="panel parallax" style="--bg:url('assets/travel.jpg')">
+    <!-- WINDOW: Travel image preview -->
+    <section class="panel window" style="--bg:url('assets/travel.jpg')"></section>
+
+    <!-- TEXT: Travel -->
+    <section id="travel" class="panel text">
       <div class="panel-inner">
         <h2>Travel</h2>
         <p>Hotel block, airports, parking, shuttle info.</p>
       </div>
     </section>
 
-    <section id="dress" class="panel parallax" style="--bg:url('assets/dress.jpg')">
+    <!-- WINDOW: Dress image preview -->
+    <section class="panel window" style="--bg:url('assets/dress.jpg')"></section>
+
+    <!-- TEXT: Dress -->
+    <section id="dress" class="panel text">
       <div class="panel-inner">
         <h2>Dress code</h2>
         <p>Short guidance + any cultural notes.</p>
       </div>
     </section>
 
-    <section id="registry" class="panel parallax" style="--bg:url('assets/registry.jpg')">
+    <!-- WINDOW: Registry image preview -->
+    <section class="panel window" style="--bg:url('assets/registry.jpg')"></section>
+
+    <!-- TEXT: Registry -->
+    <section id="registry" class="panel text">
       <div class="panel-inner">
         <h2>Registry</h2>
         <p>Registry links (later).</p>
       </div>
     </section>
+
   </main>
 
   <script src="app.js"></script>
