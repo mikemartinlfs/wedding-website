@@ -136,18 +136,19 @@ p{ margin:0 0 12px 0; }
    Window panels (image only)
    ========================= */
 .panel.window{
-  background:var(--pageBg);
-  overflow:hidden;
-}
-
-/* the framed image window */
-.panel.window{
   /* keep it tall so you don’t see the next window until this one is almost gone */
-  min-height: 120vh;
-  padding: 0;
-  display: block;
-  position: relative;
-  background: var(--pageBg);
+  min-height:120vh;
+  padding:0;
+  display:block;
+  position:relative;
+  background:var(--pageBg);
+
+  /*
+    IMPORTANT:
+    Do NOT set overflow:hidden on this element (or its ancestors),
+    or sticky will often stop working and the window will scroll normally.
+  */
+  overflow:visible;
 }
 
 /* The framed window itself */
@@ -155,24 +156,27 @@ p{ margin:0 0 12px 0; }
   content:"";
   display:block;
 
-  width: var(--winW);
-  height: var(--winH);
+  width:var(--winW);
+  height:var(--winH);
 
-  /* THIS is the key: it stays “still” while the section scrolls */
-  position: sticky;
-  top: calc((100vh - var(--winH)) / 2);
+  /* Pins within THIS section's scroll range */
+  position:sticky;
+  top:calc((100vh - var(--winH)) / 2);
 
-  margin: 0 auto;
+  margin:0 auto;
 
-  border-radius: var(--winRadius);
+  border-radius:var(--winRadius);
 
-  background-image: var(--bg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  /* Clip the image to the rounded frame without breaking sticky */
+  overflow:hidden;
+
+  background-image:var(--bg);
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
 
   /* Frame */
-  border: var(--winFrame) solid rgba(14,14,16,.96);
+  border:var(--winFrame) solid rgba(14,14,16,.96);
 
   /* Depth / rim + shadow */
   box-shadow:
@@ -185,13 +189,8 @@ p{ margin:0 0 12px 0; }
 /* Soft separation top/bottom so it feels like “windows” */
 .panel.window{
   box-shadow:
-    inset 0 70px 110px rgba(15,26,20,.70),
-    inset 0 -70px 110px rgba(15,26,20,.70);
-}
-
-/* Optional: slight fade at top/bottom of the whole viewport so windows feel “separated” */
-.panel.window{
-  box-shadow: inset 0 60px 90px rgba(15,26,20,.55), inset 0 -60px 90px rgba(15,26,20,.55);
+    inset 0 60px 90px rgba(15,26,20,.55),
+    inset 0 -60px 90px rgba(15,26,20,.55);
 }
 
 /* =========================
@@ -324,9 +323,6 @@ em{ color:rgba(244,240,230,.86); }
 
   .grid{ grid-template-columns:1fr; }
   .panel{ padding:76px 14px; }
-
-  /* mobile browsers: fixed attachment is unreliable */
-  .panel.window::before{ background-attachment:scroll; }
 
   .panel.text .panel-inner{
     padding:22px 16px;
