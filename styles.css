@@ -141,41 +141,52 @@ p{ margin:0 0 12px 0; }
 }
 
 /* the framed image window */
-.panel.window::before{
-  content:"";
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:var(--winW);
-  height:var(--winH);
-  transform:translate(-50%,-50%);
-  border-radius:var(--winRadius);
-
-  background-image:var(--bg);
-  background-size:cover;
-  background-position:center center;
-  background-attachment:fixed;
-  will-change:transform;
-  background-color:#000;
-
-  border:var(--winFrame) solid rgba(14,14,16,.95);
-  box-shadow:0 0 0 1px rgba(0,0,0,.60), var(--shadowWin);
+.panel.window{
+  /* keep it tall so you don’t see the next window until this one is almost gone */
+  min-height: 120vh;
+  padding: 0;
+  display: block;
+  position: relative;
+  background: var(--pageBg);
 }
 
-/* inner rim / depth */
-.panel.window::after{
+/* The framed window itself */
+.panel.window::before{
   content:"";
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:calc(var(--winW) - (var(--winFrame) * 2));
-  height:calc(var(--winH) - (var(--winFrame) * 2));
-  transform:translate(-50%,-50%);
-  border-radius:calc(var(--winRadius) - 10px);
-  pointer-events:none;
+  display:block;
+
+  width: var(--winW);
+  height: var(--winH);
+
+  /* THIS is the key: it stays “still” while the section scrolls */
+  position: sticky;
+  top: calc((100vh - var(--winH)) / 2);
+
+  margin: 0 auto;
+
+  border-radius: var(--winRadius);
+
+  background-image: var(--bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Frame */
+  border: var(--winFrame) solid rgba(14,14,16,.96);
+
+  /* Depth / rim + shadow */
   box-shadow:
+    0 0 0 1px rgba(0,0,0,.65),
     inset 0 0 0 1px rgba(255,255,255,.10),
-    inset 0 18px 40px rgba(0,0,0,.22);
+    inset 0 18px 44px rgba(0,0,0,.20),
+    var(--shadowWin);
+}
+
+/* Soft separation top/bottom so it feels like “windows” */
+.panel.window{
+  box-shadow:
+    inset 0 70px 110px rgba(15,26,20,.70),
+    inset 0 -70px 110px rgba(15,26,20,.70);
 }
 
 /* Optional: slight fade at top/bottom of the whole viewport so windows feel “separated” */
