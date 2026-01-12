@@ -13,10 +13,10 @@
   --glassBorder:rgba(255,255,255,.14);
 
   /* Window frame */
-  --winW:min(980px, 86vw);
-  --winH:min(72vh, 680px);
-  --winRadius:22px;
-  --winFrame:14px;
+  --winW:min(1280px, 94vw);
+  --winH:min(82vh, 820px);
+  --winRadius:24px;
+  --winFrame:12px;
 
   /* Layout */
   --maxW:920px;
@@ -153,8 +153,9 @@ p{ margin:0 0 12px 0; }
 
   background-image:var(--bg);
   background-size:cover;
-  background-position:center;
+  background-position:center center;
   background-attachment:fixed;
+  will-change:transform;
   background-color:#000;
 
   border:var(--winFrame) solid rgba(14,14,16,.95);
