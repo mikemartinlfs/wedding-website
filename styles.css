@@ -13,8 +13,8 @@
   --glassBorder:rgba(255,255,255,.14);
 
   /* Window frame */
-  --winW:min(1280px, 94vw);
-  --winH:min(82vh, 820px);
+  --winW:min(1400px, 96vw);
+  --winH:min(84vh, 860px);
   --winRadius:24px;
   --winFrame:12px;
 
