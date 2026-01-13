@@ -113,9 +113,7 @@ p{ margin:0 0 12px 0; }
   position:fixed;
   left:50%;
   top:50%;
-
-  /* JS will set --vy (px) so the window "slides" while scrolling */
-  transform: translate(-50%, calc(-50% + var(--vy, 0px)));
+  transform:translate(-50%, -50%);
 
   width:var(--winW);
   height:var(--winH);
@@ -138,9 +136,7 @@ p{ margin:0 0 12px 0; }
     var(--shadowWin);
 
   pointer-events:none;
-
-  /* optional: makes the motion feel less jittery */
-  will-change: transform;
+  will-change:transform;
 }
 
 /* =========================
