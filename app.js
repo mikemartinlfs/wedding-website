@@ -226,38 +226,72 @@ rsvpForm?.attending?.addEventListener("change", updateAgeBlock);
 refreshStatus();
 
 (() => {
-  const viewportWindow = document.getElementById('viewportWindow');
-  const windows = Array.from(document.querySelectorAll('.panel.window[data-bg]'));
+  const viewportWindow=document.getElementById('viewportWindow');
+  const markers=Array.from(document.querySelectorAll('.panel.window[data-bg]'));
+  if(!viewportWindow || markers.length==0) return;
 
-  if(!viewportWindow || windows.length==0) return;
+  const clamp=(v,min,max)=>Math.max(min, Math.min(max, v));
 
-  const setBg = (bgPath) => {
+  const setBg=(bgPath)=>{
+    if(!bgPath) return;
     viewportWindow.style.setProperty('--bg', `url(${bgPath})`);
-    viewportWindow.classList.add('is-active');
   };
 
-  const clearBg = () => {
-    viewportWindow.classList.remove('is-active');
-  };
+  // initial image
+  setBg(markers[0].getAttribute('data-bg'));
 
-  const obs = new IntersectionObserver((entries) => {
-    // pick the most-visible window section
-    const visible = entries
-      .filter(e=>e.isIntersecting)
-      .sort((a,b)=>b.intersectionRatio - a.intersectionRatio)[0];
+  const pickCurrentMarker=()=>{
+    const vh=window.innerHeight;
+    const center=vh/2;
+    let best=markers[0];
+    let bestDist=Infinity;
 
-    if(!visible){
-      clearBg();
-      return;
+    for(const el of markers){
+      const r=el.getBoundingClientRect();
+      const mCenter=r.top + r.height/2;
+      const dist=Math.abs(mCenter - center);
+      if(dist < bestDist){
+        bestDist=dist;
+        best=el;
+      }
     }
+    return best;
+  };
 
-    const bg = visible.target.getAttribute('data-bg');
-    if(bg) setBg(bg);
-  }, {
-    root:null,
-    threshold:[0, .15, .35, .55, .75, .95]
-  });
+  const markerProgress=(el)=>{
+    const r=el.getBoundingClientRect();
+    const vh=window.innerHeight;
+    const total=r.height + vh;
+    const p=(vh - r.top) / total;     // 0..1-ish
+    return clamp(p, 0, 1);
+  };
 
-  windows.forEach(w=>obs.observe(w));
+  const travelPx=()=>Math.round(window.innerHeight * 0.55);
+
+  const update=()=>{
+    const current=pickCurrentMarker();
+    setBg(current.getAttribute('data-bg'));
+
+    const p=markerProgress(current);
+    const range=travelPx();
+    const vy=Math.round((p - 0.5) * 2 * range);
+
+    // DIRECTLY MOVE THE FIXED WINDOW (no CSS var involvement)
+    viewportWindow.style.transform=`translate(-50%, calc(-50% + ${vy}px))`;
+  };
+
+  update();
+
+  let ticking=false;
+  const onScroll=()=>{
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      ticking=false;
+      update();
+    });
+  };
+
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', update, { passive:true });
 })();
-
