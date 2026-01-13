@@ -134,10 +134,12 @@ p{ margin:0 0 12px 0; }
     inset 0 18px 44px rgba(0,0,0,.20),
     var(--shadowWin);
 
-  opacity:1;              /* <-- always visible */
+  opacity:0;
+  transition:opacity .18s ease;
   pointer-events:none;
 }
 
+.viewport-window.is-active{ opacity:1; }
 
 /* =========================
    Panels (base)
