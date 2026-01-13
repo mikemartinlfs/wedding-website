@@ -224,3 +224,40 @@ rsvpForm?.guest_count?.addEventListener("input", updateAgeBlock);
 rsvpForm?.attending?.addEventListener("change", updateAgeBlock);
 
 refreshStatus();
+
+(() => {
+  const viewportWindow = document.getElementById('viewportWindow');
+  const windows = Array.from(document.querySelectorAll('.panel.window[data-bg]'));
+
+  if(!viewportWindow || windows.length==0) return;
+
+  const setBg = (bgPath) => {
+    viewportWindow.style.setProperty('--bg', `url(${bgPath})`);
+    viewportWindow.classList.add('is-active');
+  };
+
+  const clearBg = () => {
+    viewportWindow.classList.remove('is-active');
+  };
+
+  const obs = new IntersectionObserver((entries) => {
+    // pick the most-visible window section
+    const visible = entries
+      .filter(e=>e.isIntersecting)
+      .sort((a,b)=>b.intersectionRatio - a.intersectionRatio)[0];
+
+    if(!visible){
+      clearBg();
+      return;
+    }
+
+    const bg = visible.target.getAttribute('data-bg');
+    if(bg) setBg(bg);
+  }, {
+    root:null,
+    threshold:[0, .15, .35, .55, .75, .95]
+  });
+
+  windows.forEach(w=>obs.observe(w));
+})();
+
