@@ -9,7 +9,7 @@ const obs=new IntersectionObserver((entries)=>{
   const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
   if(!visible) return;
   setActive(visible.target.id);
-}, { threshold:[0.25,0.5,0.75] });
+},{ threshold:[0.25,0.5,0.75] });
 
 sections.forEach(s=>obs.observe(s));
 
@@ -36,45 +36,45 @@ const c_notes=document.getElementById("c_notes");
 
 const editBtn=document.getElementById("editBtn");
 
-function show(el, on){ el?.classList.toggle("hidden", !on); }
+function show(el,on){ el?.classList.toggle("hidden",!on); }
 
 async function apiGet(url){
-  const r=await fetch(url, { method:"GET" });
+  const r=await fetch(url,{ method:"GET" });
   const txt=await r.text();
-  try{ return { ok:r.ok, status:r.status, data:JSON.parse(txt) }; }
-  catch{ return { ok:r.ok, status:r.status, data:{ raw:txt } }; }
+  try{ return { ok:r.ok,status:r.status,data:JSON.parse(txt) }; }
+  catch{ return { ok:r.ok,status:r.status,data:{ raw:txt } }; }
 }
 
-async function apiPost(url, body){
-  const r=await fetch(url, {
+async function apiPost(url,body){
+  const r=await fetch(url,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify(body)
   });
   const txt=await r.text();
-  try{ return { ok:r.ok, status:r.status, data:JSON.parse(txt) }; }
-  catch{ return { ok:r.ok, status:r.status, data:{ raw:txt } }; }
+  try{ return { ok:r.ok,status:r.status,data:JSON.parse(txt) }; }
+  catch{ return { ok:r.ok,status:r.status,data:{ raw:txt } }; }
 }
 
 function setHeader(name){
-  if(inviteNameEl) inviteNameEl.textContent = name ? `${name}, will you join us in this new chapter?` : "Will you join us in this new chapter?";
+  if(inviteNameEl) inviteNameEl.textContent=name ? `${name}, will you join us in this new chapter?` : "Will you join us in this new chapter?";
 }
 
 function setFormValues(resp){
   if(!rsvpForm) return;
   const att=String(resp?.attending || "").trim().toLowerCase();
-  rsvpForm.attending.value = att || "";
-  rsvpForm.guest_count.value = resp?.guest_count ?? "";
-  rsvpForm.guest_ages.value = resp?.guest_ages ?? "";
-  rsvpForm.notes.value = resp?.notes ?? "";
+  rsvpForm.attending.value=att || "";
+  rsvpForm.guest_count.value=resp?.guest_count ?? "";
+  rsvpForm.guest_ages.value=resp?.guest_ages ?? "";
+  rsvpForm.notes.value=resp?.notes ?? "";
 }
 
 function fillConfirmed(resp){
   const att=String(resp?.attending || "").trim().toLowerCase();
-  if(c_attending) c_attending.textContent = att==="no" ? "No" : "Yes";
-  if(c_guest_count) c_guest_count.textContent = resp?.guest_count ?? "";
-  if(c_guest_ages) c_guest_ages.textContent = resp?.guest_ages ?? "";
-  if(c_notes) c_notes.textContent = resp?.notes ?? "";
+  if(c_attending) c_attending.textContent=att==="no" ? "No" : "Yes";
+  if(c_guest_count) c_guest_count.textContent=resp?.guest_count ?? "";
+  if(c_guest_ages) c_guest_ages.textContent=resp?.guest_ages ?? "";
+  if(c_notes) c_notes.textContent=resp?.notes ?? "";
 }
 
 function clearSubmitMsg(){
@@ -84,47 +84,45 @@ function clearSubmitMsg(){
 }
 
 function showInvalid(msg){
-  if(invalidToken){
-    invalidToken.textContent = msg || "This invitation link is missing or invalid.";
-  }
-  show(invalidToken, true);
-  show(rsvpView, false);
-  show(confirmedView, false);
+  if(invalidToken) invalidToken.textContent=msg || "This invitation link is missing or invalid.";
+  show(invalidToken,true);
+  show(rsvpView,false);
+  show(confirmedView,false);
 }
 
 function showRsvp(name){
   setHeader(name);
-  show(invalidToken, false);
-  show(rsvpView, true);
-  show(confirmedView, false);
-  show(editBtn, false);
+  show(invalidToken,false);
+  show(rsvpView,true);
+  show(confirmedView,false);
+  show(editBtn,false);
   clearSubmitMsg();
 }
 
-function showConfirmed(name, resp, canEdit){
+function showConfirmed(name,resp,canEdit){
   setHeader(name);
-  show(invalidToken, false);
-  show(rsvpView, false);
-  show(confirmedView, true);
+  show(invalidToken,false);
+  show(rsvpView,false);
+  show(confirmedView,true);
 
   if(confirmedMeta){
     const ts=resp?.updated_at || resp?.submitted_at || "";
-    confirmedMeta.textContent = ts ? `Last updated: ${ts}` : "";
+    confirmedMeta.textContent=ts ? `Last updated: ${ts}` : "";
   }
 
   fillConfirmed(resp);
-  show(editBtn, !!canEdit);
+  show(editBtn,!!canEdit);
   clearSubmitMsg();
 }
 
 function updateAgeBlock(){
   if(!ageBlock || !rsvpForm) return;
 
-  const gc=parseInt(String(rsvpForm.guest_count?.value || "0"), 10);
+  const gc=parseInt(String(rsvpForm.guest_count?.value || "0"),10);
   const guestCount=Number.isNaN(gc) ? 0 : gc;
 
   const shouldShow=HAS_CHILDREN && guestCount > 1;
-  ageBlock.classList.toggle("hidden", !shouldShow);
+  ageBlock.classList.toggle("hidden",!shouldShow);
 
   if(!shouldShow && rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
 }
@@ -149,15 +147,15 @@ async function refreshStatus(){
   if(!info.submitted){
     showRsvp(info.name);
     setFormValues(info.defaults || null);
-  } else {
-    showConfirmed(info.name, info.response, info.can_edit);
+  }else{
+    showConfirmed(info.name,info.response,info.can_edit);
   }
   updateAgeBlock();
 
   return info;
 }
 
-editBtn?.addEventListener("click", async ()=>{
+editBtn?.addEventListener("click",async ()=>{
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
   if(!s.ok){
     showInvalid(s.data?.error || `Error (${s.status})`);
@@ -167,7 +165,7 @@ editBtn?.addEventListener("click", async ()=>{
   const info=s.data;
 
   if(!info.can_edit){
-    showConfirmed(info.name, info.response, false);
+    showConfirmed(info.name,info.response,false);
     return;
   }
 
@@ -175,7 +173,7 @@ editBtn?.addEventListener("click", async ()=>{
   setFormValues(info.response);
 });
 
-rsvpForm?.addEventListener("submit", async (e)=>{
+rsvpForm?.addEventListener("submit",async (e)=>{
   e.preventDefault();
   clearSubmitMsg();
 
@@ -195,11 +193,11 @@ rsvpForm?.addEventListener("submit", async (e)=>{
     notes:rsvpForm.notes.value
   };
 
-  const r=await apiPost("/api/submit", payload);
+  const r=await apiPost("/api/submit",payload);
 
   if(!r.ok){
     if(submitMsg){
-      submitMsg.textContent = r.data?.error || `Submit failed (${r.status})`;
+      submitMsg.textContent=r.data?.error || `Submit failed (${r.status})`;
       submitMsg.classList.remove("hidden");
     }
     return;
@@ -213,69 +211,102 @@ rsvpForm?.addEventListener("submit", async (e)=>{
   await refreshStatus();
 });
 
-rsvpForm?.guest_count?.addEventListener("input", updateAgeBlock);
-rsvpForm?.attending?.addEventListener("change", updateAgeBlock);
+rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
+rsvpForm?.attending?.addEventListener("change",updateAgeBlock);
 
 refreshStatus();
 
 /* =========================
    Viewport-over-still-image logic
    - viewportWindow: pinned image (NEVER moves)
-   - viewportMask: full-screen overlay with a moving cutout (THIS moves)
+   - viewportMask: opaque overlay with moving cutout (THIS moves)
+   - image changes only when the cutout no longer overlaps a window section
    ========================= */
 (() => {
   const viewportWindow=document.getElementById("viewportWindow");
   const viewportMask=document.getElementById("viewportMask");
   const markers=Array.from(document.querySelectorAll(".panel.window[data-bg]"));
-
   if(!viewportWindow || !viewportMask || markers.length==0) return;
 
-  const clamp=(v,min,max)=>Math.max(min, Math.min(max, v));
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 
   const setBg=(bgPath)=>{
     if(!bgPath) return;
-    viewportWindow.style.setProperty("--bg", `url(${bgPath})`);
+    viewportWindow.style.setProperty("--bg",`url(${bgPath})`);
   };
 
-  // Start on first image
+  // start image
   setBg(markers[0].getAttribute("data-bg"));
 
-  const pickCurrentMarker=()=>{
+  const markerProgress=(el)=>{
+    const r=el.getBoundingClientRect();
     const vh=window.innerHeight;
-    const center=vh/2;
+    const total=r.height + vh;
+    return clamp((vh - r.top) / total,0,1);
+  };
+
+  const overlapPx=(aTop,aBottom,bTop,bBottom)=>{
+    const o=Math.min(aBottom,bBottom) - Math.max(aTop,bTop);
+    return o>0 ? o : 0;
+  };
+
+  const pickMarkerByOverlap=(cutTopPage,cutBottomPage)=>{
     let best=markers[0];
-    let bestDist=Infinity;
+    let bestO=-1;
 
     for(const el of markers){
-      const r=el.getBoundingClientRect();
-      const mCenter=r.top + r.height/2;
-      const dist=Math.abs(mCenter - center);
-      if(dist < bestDist){
-        bestDist=dist;
+      const mTop=el.offsetTop;
+      const mBottom=mTop + el.offsetHeight;
+      const o=overlapPx(cutTopPage,cutBottomPage,mTop,mBottom);
+      if(o>bestO){
+        bestO=o;
         best=el;
       }
     }
     return best;
   };
 
-  // 0 when marker top hits bottom of viewport; 1 when marker bottom hits top of viewport
-  const markerProgress=(el)=>{
-    const r=el.getBoundingClientRect();
-    const vh=window.innerHeight;
-    const total=r.height + vh;
-    return clamp((vh - r.top) / total, 0, 1);
-  };
-
   const update=()=>{
-    const current=pickCurrentMarker();
-    setBg(current.getAttribute("data-bg"));
+    const wr=viewportWindow.getBoundingClientRect();
 
-    // Move the CUTOUT, not the image.
-    const p=markerProgress(current);
+    // PERFECT centering: use the pinned window's actual screen position
+    const baseLeft=Math.round(wr.left);
+    const baseTop=Math.round(wr.top);
+    const winH=Math.round(wr.height);
+
+    // Determine which marker controls the vertical travel (use the one most relevant to scroll)
+    // We'll start by picking the marker whose element center is closest to viewport center
+    const vh=window.innerHeight;
+    const center=vh/2;
+    let travelMarker=markers[0];
+    let bestDist=Infinity;
+    for(const el of markers){
+      const r=el.getBoundingClientRect();
+      const mCenter=r.top + r.height/2;
+      const d=Math.abs(mCenter - center);
+      if(d<bestDist){
+        bestDist=d;
+        travelMarker=el;
+      }
+    }
+
+    const p=markerProgress(travelMarker);
     const range=Math.round(window.innerHeight * 0.55);
     const vy=Math.round((p - 0.5) * 2 * range);
 
-    viewportMask.style.setProperty("--cutTop", `calc(50% - (var(--winH) / 2) + ${vy}px)`);
+    // Cutout screen rect
+    const cutTopPx=baseTop + vy;
+    const cutBottomPx=cutTopPx + winH;
+
+    // Convert to page coords for overlap-based image switching
+    const cutTopPage=window.scrollY + cutTopPx;
+    const cutBottomPage=window.scrollY + cutBottomPx;
+
+    const active=pickMarkerByOverlap(cutTopPage,cutBottomPage);
+    setBg(active.getAttribute("data-bg"));
+
+    viewportMask.style.setProperty("--cutLeft",`${baseLeft}px`);
+    viewportMask.style.setProperty("--cutTop",`${cutTopPx}px`);
   };
 
   update();
@@ -290,6 +321,6 @@ refreshStatus();
     });
   };
 
-  window.addEventListener("scroll", onScroll, { passive:true });
-  window.addEventListener("resize", update, { passive:true });
+  window.addEventListener("scroll",onScroll,{ passive:true });
+  window.addEventListener("resize",update,{ passive:true });
 })();
