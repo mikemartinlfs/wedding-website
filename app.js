@@ -67,42 +67,40 @@ function clearSubmitMsg(){
 }
 
 function setFormValues(resp){
-  if(!rsvpForm) return;
-  const att=String(resp?.attending || "").trim().toLowerCase();
-  rsvpForm.attending.value=att || "";
-  rsvpForm.guest_count.value=resp?.guest_count ?? "";
-  rsvpForm.guest_ages.value=resp?.guest_ages ?? "";
-  rsvpForm.notes.value=resp?.notes ?? "";
+  if(!rsvpForm || !resp) return;
+  const att=String(resp.attending || "").trim().toLowerCase();
+  if(att) rsvpForm.attending.value=att;
+  if(resp.guest_count) rsvpForm.guest_count.value=resp.guest_count;
+  if(resp.guest_ages) rsvpForm.guest_ages.value=resp.guest_ages;
+  if(resp.notes) rsvpForm.notes.value=resp.notes;
 }
 
 function fillConfirmed(resp){
-  const att=String(resp?.attending || "").trim().toLowerCase();
+  if(!resp) return;
+  const att=String(resp.attending || "").trim().toLowerCase();
   if(c_attending) c_attending.textContent=att==="no" ? "No" : "Yes";
-  if(c_guest_count) c_guest_count.textContent=resp?.guest_count ?? "";
-  if(c_guest_ages) c_guest_ages.textContent=resp?.guest_ages ?? "";
-  if(c_notes) c_notes.textContent=resp?.notes ?? "";
+  if(c_guest_count) c_guest_count.textContent=resp.guest_count ?? "";
+  if(c_guest_ages) c_guest_ages.textContent=resp.guest_ages ?? "";
+  if(c_notes) c_notes.textContent=resp.notes ?? "";
 }
 
 function updateAgeBlock(){
   if(!ageBlock || !rsvpForm) return;
-
   const gc=parseInt(String(rsvpForm.guest_count?.value || "0"),10);
   const guestCount=Number.isNaN(gc) ? 0 : gc;
-
   const shouldShow=HAS_CHILDREN && guestCount > 1;
   ageBlock.classList.toggle("hidden",!shouldShow);
-
   if(!shouldShow && rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
 }
 
 function showInvalid(msg){
-  if(invalidToken) invalidToken.textContent=msg || "This invitation link is missing or invalid; please use the original link sent to access our wedding website.";
+  if(invalidToken) invalidToken.textContent=msg || "This invitation link is missing or invalid.";
   showScreen(invalidScreen);
 }
 
-function openRsvp(name,defaultsOrResp){
+function openRsvp(name,defaults){
   setHeader(name);
-  setFormValues(defaultsOrResp || null);
+  setFormValues(defaults || null);
   updateAgeBlock();
   clearSubmitMsg();
   showScreen(rsvpScreen);
@@ -113,23 +111,15 @@ function openHome(name,resp,canEdit){
     const ts=resp?.updated_at || resp?.submitted_at || "";
     confirmedMeta.textContent=ts ? `Last updated: ${ts}` : "";
   }
-
   fillConfirmed(resp || null);
-
   if(editBtn) editBtn.classList.toggle("hidden",!canEdit);
-
   showScreen(homeScreen);
-}
-
-function openPage(pageId){
-  const el=document.getElementById(pageId);
-  if(el) showScreen(el);
 }
 
 async function refreshStatus(){
   if(!token){
-    showInvalid("This invitation link is missing or invalid; please use the original link sent to access our wedding website.");
-    return null;
+    showInvalid("This invitation link is missing or invalid.");
+    return;
   }
 
   fetch(`/api/open?t=${encodeURIComponent(token)}`).catch(()=>{});
@@ -137,70 +127,28 @@ async function refreshStatus(){
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
   if(!s.ok){
     showInvalid(s.data?.error || `Error (${s.status})`);
-    return null;
+    return;
   }
 
   const info=s.data;
-
   HAS_CHILDREN=!!info.has_children;
 
   if(!info.submitted){
-    openRsvp(info.name,info.defaults);
+    openRsvp(info.name,info.defaults || null);
   }else{
     openHome(info.name,info.response,!!info.can_edit);
   }
-
-  return info;
 }
 
-/* Tile navigation */
-document.querySelectorAll(".tile[data-page]").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    openPage(btn.getAttribute("data-page"));
-  });
-});
-
-document.querySelectorAll(".backHome").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    showScreen(homeScreen);
-  });
-});
-
-/* RSVP -> scroll down button (goes to Details page) */
-jumpToHomeBtn?.addEventListener("click",()=>{
-  openPage("details");
-});
-
-/* Edit RSVP from home */
 editBtn?.addEventListener("click",async ()=>{
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
-  if(!s.ok){
-    showInvalid(s.data?.error || `Error (${s.status})`);
-    return;
-  }
-
-  const info=s.data;
-
-  if(!info.can_edit){
-    openHome(info.name,info.response,false);
-    return;
-  }
-
-  openRsvp(info.name,info.response);
+  if(!s.ok){ showInvalid(s.data?.error); return; }
+  openRsvp(s.data.name,s.data.response);
 });
 
-/* Submit RSVP */
 rsvpForm?.addEventListener("submit",async (e)=>{
   e.preventDefault();
   clearSubmitMsg();
-
-  if(!token){
-    if(submitMsg){
-      submitMsg.textContent="Missing invite token.";
-      submitMsg.classList.remove("hidden");
-    }
-    return;
-  }
 
   const payload={
     token,
@@ -211,31 +159,18 @@ rsvpForm?.addEventListener("submit",async (e)=>{
   };
 
   const r=await apiPost("/api/submit",payload);
-
   if(!r.ok){
-    if(submitMsg){
-      submitMsg.textContent=r.data?.error || `Submit failed (${r.status})`;
-      submitMsg.classList.remove("hidden");
-    }
+    submitMsg.textContent=r.data?.error || "Submit failed.";
+    submitMsg.classList.remove("hidden");
     return;
   }
 
-  if(submitMsg){
-    submitMsg.textContent="RSVP saved.";
-    submitMsg.classList.remove("hidden");
-  }
-
-  await refreshStatus();
+  submitMsg.textContent="RSVP saved.";
+  submitMsg.classList.remove("hidden");
+  refreshStatus();
 });
 
 rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
 rsvpForm?.attending?.addEventListener("change",updateAgeBlock);
-
-/* Optional: deep-link to a page via #travel etc (after status decides home/rsvp) */
-window.addEventListener("hashchange",()=>{
-  const id=location.hash.replace("#","").trim();
-  if(!id) return;
-  if(["details","travel","dress","registry"].includes(id)) openPage(id);
-});
 
 refreshStatus();
