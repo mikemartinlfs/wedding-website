@@ -24,7 +24,6 @@
   --maxW:920px;
 
   /* Shadows */
-  --shadowWin:0 26px 80px rgba(0,0,0,.45);
   --shadowSoft:0 18px 46px rgba(0,0,0,.28);
 }
 
@@ -54,24 +53,10 @@ h2{ font-size:32px; line-height:1.1; font-weight:600; }
 
 p{ margin:0 0 12px 0; }
 
-.meta{
-  color:var(--muted);
-  font-size:14px;
-}
+.meta{ color:var(--muted); font-size:14px; }
+.lead{ font-size:16px; line-height:1.55; color:rgba(244,240,230,.92); }
+.hint{ margin-top:18px; color:var(--muted); font-size:13px; }
 
-.lead{
-  font-size:16px;
-  line-height:1.55;
-  color:rgba(244,240,230,.92);
-}
-
-.hint{
-  margin-top:18px;
-  color:var(--muted);
-  font-size:13px;
-}
-
-/* Divider */
 .divider{
   margin:18px 0 14px 0;
   height:1px;
@@ -147,8 +132,8 @@ p{ margin:0 0 12px 0; }
 }
 
 /* =========================
-   Opaque overlay with transparent rectangular cutout
-   (mask moves; image does not)
+   FULLY OPAQUE overlay with a transparent rectangular cutout
+   NOTE: --cutLeft and --cutTop are set in JS in px.
    ========================= */
 .viewport-mask{
   position:fixed;
@@ -156,16 +141,20 @@ p{ margin:0 0 12px 0; }
   z-index:10;
   pointer-events:none;
 
-  --cutLeft: calc(50% - (var(--winW) / 2));
-  --cutTop:  calc(50% - (var(--winH) / 2));
+  /* JS will set these as px values (e.g., "120px") */
+  --cutLeft: 0px;
+  --cutTop:  0px;
 
-  /* Opaque outside overlay */
+  /* Outside MUST be opaque. No transparency here. */
   background:
-    radial-gradient(1400px 520px at 50% 18%, rgba(0,0,0,.40), rgba(0,0,0,0) 70%),
-    radial-gradient(1400px 520px at 50% 82%, rgba(0,0,0,.40), rgba(0,0,0,0) 70%),
-    linear-gradient(180deg, rgba(15,26,20,.96), rgba(15,26,20,.78), rgba(15,26,20,.96));
+    linear-gradient(180deg, rgba(15,26,20,1), rgba(15,26,20,1));
 
-  /* Punch a RECTANGULAR hole using masking (reliable) */
+  /* Optional: opaque shading (still opaque) to give depth */
+  box-shadow:
+    inset 0 90px 140px rgba(0,0,0,.55),
+    inset 0 -90px 140px rgba(0,0,0,.55);
+
+  /* Punch a RECTANGULAR hole using masking */
   -webkit-mask-image:
     linear-gradient(#000 0 0),
     linear-gradient(#000 0 0);
@@ -190,9 +179,10 @@ p{ margin:0 0 12px 0; }
   mask-repeat:no-repeat;
   mask-composite:exclude;
 
-  will-change:mask-position;
+  will-change:-webkit-mask-position, mask-position;
 }
 
+/* No border/frame */
 .viewport-mask::after{ content:none; }
 
 /* =========================
@@ -243,7 +233,6 @@ p{ margin:0 0 12px 0; }
   z-index:2;
 }
 
-/* Top rule */
 .panel.text .panel-inner::before{
   content:"";
   position:absolute;
@@ -337,7 +326,6 @@ button:active{ transform:translateY(1px); }
   color:rgba(255,255,255,.92);
 }
 
-/* Make <em> readable on dark */
 em{ color:rgba(244,240,230,.86); }
 
 /* =========================
