@@ -217,24 +217,37 @@ rsvpForm?.attending?.addEventListener("change",updateAgeBlock);
 refreshStatus();
 
 /* =========================
-   Viewport-over-still-image parallax (NO flicker)
-   Rule: keep current image until the cutout rect no longer intersects
-         the current marker section at all. Then move deterministically
-         to next/prev marker.
+   Viewport-over-still-image parallax (no dual-image, supports green “blank” transition)
+   - viewportWindow is FULL SCREEN (CSS change required)
+   - cutout moves; outside is opaque green
+   - image is shown ONLY when cutout overlaps a .panel.window marker
    ========================= */
 (() => {
-  const viewportWindow=document.getElementById("viewportWindow");
   const viewportMask=document.getElementById("viewportMask");
+  const viewportWindow=document.getElementById("viewportWindow");
   let markers=Array.from(document.querySelectorAll(".panel.window[data-bg]"));
-  if(!viewportWindow || !viewportMask || markers.length==0) return;
+  if(!viewportMask || !viewportWindow || markers.length==0) return;
 
-  // Ensure deterministic order
   markers=markers.sort((a,b)=>a.offsetTop - b.offsetTop);
 
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 
+  // Create an invisible sizer so we can get var(--winW/--winH) in real px
+  const sizer=document.createElement("div");
+  sizer.style.position="fixed";
+  sizer.style.left="-99999px";
+  sizer.style.top="0";
+  sizer.style.width="var(--winW)";
+  sizer.style.height="var(--winH)";
+  sizer.style.pointerEvents="none";
+  sizer.style.visibility="hidden";
+  document.body.appendChild(sizer);
+
   const setBg=(bgPath)=>{
-    if(!bgPath) return;
+    if(!bgPath){
+      viewportWindow.style.setProperty("--bg","none");
+      return;
+    }
     viewportWindow.style.setProperty("--bg",`url(${bgPath})`);
   };
 
@@ -254,16 +267,15 @@ refreshStatus();
   setBg(markers[activeIdx].getAttribute("data-bg"));
 
   const update=()=>{
-    const wr=viewportWindow.getBoundingClientRect();
+    const sr=sizer.getBoundingClientRect();
+    const winW=Math.round(sr.width);
+    const winH=Math.round(sr.height);
 
-    // lock cutout to the pinned image window (perfect centering)
-    const baseLeft=Math.round(wr.left);
-    const baseTop=Math.round(wr.top);
-    const winH=Math.round(wr.height);
+    const baseLeft=Math.round((window.innerWidth - winW) / 2);
+    const baseTop=Math.round((window.innerHeight - winH) / 2);
 
+    // Move cutout based ONLY on active marker's progress
     const active=markers[activeIdx];
-
-    // vertical travel based ONLY on active marker
     const p=markerProgress(active);
     const range=Math.round(window.innerHeight * 0.55);
     const vy=Math.round((p - 0.5) * 2 * range);
@@ -274,20 +286,33 @@ refreshStatus();
     const cutTopPage=window.scrollY + cutTopPx;
     const cutBottomPage=window.scrollY + cutBottomPx;
 
-    // does the cutout still intersect the active marker section?
+    // Overlap with active marker
     const aTop=active.offsetTop;
     const aBottom=aTop + active.offsetHeight;
-    const o=overlapPx(cutTopPage,cutBottomPage,aTop,aBottom);
+    const activeO=overlapPx(cutTopPage,cutBottomPage,aTop,aBottom);
 
-    // If no intersection, move deterministically in the direction implied by where the cutout went
-    if(o<=0){
-      if(cutTopPage >= aBottom && activeIdx < markers.length-1){
-        activeIdx++;
-        setBg(markers[activeIdx].getAttribute("data-bg"));
-      }else if(cutBottomPage <= aTop && activeIdx > 0){
-        activeIdx--;
-        setBg(markers[activeIdx].getAttribute("data-bg"));
-      }
+    // Overlap with next/prev markers
+    const next=activeIdx < markers.length-1 ? markers[activeIdx+1] : null;
+    const prev=activeIdx > 0 ? markers[activeIdx-1] : null;
+
+    const nextO=next ? overlapPx(cutTopPage,cutBottomPage,next.offsetTop,next.offsetTop + next.offsetHeight) : 0;
+    const prevO=prev ? overlapPx(cutTopPage,cutBottomPage,prev.offsetTop,prev.offsetTop + prev.offsetHeight) : 0;
+
+    // Show rules:
+    // - If cutout overlaps active: show active image
+    // - Else if overlaps next: advance and show next
+    // - Else if overlaps prev: go back and show prev
+    // - Else: show NO image (solid green) until we overlap a marker again
+    if(activeO > 0){
+      setBg(active.getAttribute("data-bg"));
+    } else if(nextO > 0){
+      activeIdx++;
+      setBg(markers[activeIdx].getAttribute("data-bg"));
+    } else if(prevO > 0){
+      activeIdx--;
+      setBg(markers[activeIdx].getAttribute("data-bg"));
+    } else {
+      setBg(null);
     }
 
     viewportMask.style.setProperty("--cutLeft",`${baseLeft}px`);
