@@ -1,154 +1,67 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Michael & Avneet's Wedding Website</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Michael & Avneet</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css"/>
 </head>
-
 <body>
-  <nav id="sideNav" class="side-nav">
-    <a href="#invite" data-id="invite" class="active">Invitation</a>
-    <a href="#details" data-id="details">Details</a>
-    <a href="#travel" data-id="travel">Travel</a>
-    <a href="#dress" data-id="dress">Dress Code</a>
-    <a href="#registry" data-id="registry">Registry</a>
-  </nav>
 
-  <!-- FIXED VIEWPORT WINDOW (pinned to the screen) -->
-  <div id="viewportWindow" class="viewport-window" aria-hidden="true"></div>
-  <div id="viewportMask" class="viewport-mask" aria-hidden="true"></div>
+<div id="invalidToken" class="screen hidden"></div>
 
-  <main>
+<!-- RSVP -->
+<section id="rsvpScreen" class="screen hidden">
+  <h1 id="inviteName"></h1>
 
-    <!-- WINDOW: Hero image preview -->
-    <section class="panel window" data-bg="assets/hero.jpg"></section>
+  <form id="rsvpForm">
+    <label>Attending?
+      <select name="attending" required>
+        <option value="" disabled selected>Select</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </label>
 
-    <!-- TEXT: Invitation / RSVP -->
-    <section id="invite" class="panel text hero">
-      <div class="panel-inner">
-        <h1>One Invitation to Gather Them All</h1>
-        <h2>Michael & Avneet's Wedding</h2>
-        <p class="meta">April 26, 2026 · Stafford, Virginia</p>
-        <div class="divider"></div>
+    <label>Number attending
+      <input name="guest_count" type="number" min="0" max="10" required/>
+    </label>
 
-        <div id="invalidToken" class="notice hidden">
-          This invitation link is missing or invalid; please use the original link sent to access our wedding website.
-        </div>
+    <div id="ageBlock" class="hidden">
+      <label>Children’s ages
+        <input name="guest_ages" placeholder="6,4,2"/>
+      </label>
+    </div>
 
-        <div id="rsvpView" class="card hidden">
-          <p class="lead">Every great adventure starts with a cast of characters. We want you to be a part of ours.</p>
+    <label>Notes
+      <textarea name="notes"></textarea>
+    </label>
 
-          <form id="rsvpForm" class="form">
-            <h2 id="inviteName"></h2>
-            <p id="inviteSub"></p>
+    <button type="submit">Submit RSVP</button>
+    <div id="submitMsg"></div>
+  </form>
 
-            <div class="grid">
-              <label>
-                Attending?
-                <select name="attending" required>
-                  <option value="" disabled selected>Select</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </select>
-              </label>
+  <div class="scrollHint">Scroll for details ↓</div>
+</section>
 
-              <label>
-                Number attending
-                <input name="guest_count" type="number" min="0" max="10" required />
-              </label>
+<!-- HOME -->
+<section id="homeScreen" class="screen hidden">
+  <h1>Welcome</h1>
+  <div class="tiles">
+    <button data-page="details">Details</button>
+    <button data-page="travel">Travel</button>
+    <button data-page="dress">Dress Code</button>
+    <button data-page="registry">Registry</button>
+  </div>
+</section>
 
-              <div id="ageBlock" class="full hidden">
-                <p class="meta" style="margin:0 0 6px 0;">There will be a supervised kids’ area at the reception.</p>
-                <p class="meta" style="margin:0 0 10px 0;">
-                  To prepare properly for our smallest adventurers, please list your children’s ages separated by commas.
-                  (This information is required by the company managing the area.)
-                </p>
+<!-- INFO PAGES -->
+<section id="details" class="screen hidden"><h1>Details</h1><p>...</p><button class="back">Back</button></section>
+<section id="travel" class="screen hidden"><h1>Travel</h1><p>...</p><button class="back">Back</button></section>
+<section id="dress" class="screen hidden"><h1>Dress</h1><p>...</p><button class="back">Back</button></section>
+<section id="registry" class="screen hidden"><h1>Registry</h1><p>...</p><button class="back">Back</button></section>
 
-                <label class="full" style="margin:0;">
-                  Children’s ages (comma-separated)
-                  <input name="guest_ages" placeholder="6, 4, 2" />
-                </label>
-              </div>
-
-              <label class="full">
-                Any special requests for your journey? <em>(Dietary needs, accessibility, or anything else we should know.)</em>
-                <textarea name="notes" rows="3"></textarea>
-              </label>
-            </div>
-
-            <button type="submit">Submit RSVP</button>
-            <div id="submitMsg" class="notice hidden"></div>
-          </form>
-        </div>
-
-        <div id="confirmedView" class="card hidden">
-          <h2 style="margin-top:0;">RSVP received</h2>
-          <p class="meta" id="confirmedMeta"></p>
-
-          <div class="card" style="margin-top:12px;">
-            <div><strong>Attending:</strong> <span id="c_attending"></span></div>
-            <div><strong>Guest count:</strong> <span id="c_guest_count"></span></div>
-            <div><strong>Ages:</strong> <span id="c_guest_ages"></span></div>
-            <div><strong>Notes:</strong> <span id="c_notes"></span></div>
-          </div>
-
-          <button id="editBtn" class="hidden" type="button" style="margin-top:12px;">Edit RSVP</button>
-        </div>
-
-        <p class="hint">The adventure continues below — scroll for ceremony and reception details.</p>
-      </div>
-    </section>
-
-    <!-- WINDOW: Details image preview -->
-    <section class="panel window" data-bg="assets/details.jpg"></section>
-
-    <!-- TEXT: Details -->
-    <section id="details" class="panel text">
-      <div class="panel-inner">
-        <h2>Details</h2>
-        <p>Ceremony time, reception time, venue address, etc.</p>
-      </div>
-    </section>
-
-    <!-- WINDOW: Travel image preview -->
-    <section class="panel window" data-bg="assets/travel.jpg"></section>
-
-    <!-- TEXT: Travel -->
-    <section id="travel" class="panel text">
-      <div class="panel-inner">
-        <h2>Travel</h2>
-        <p>Hotel block, airports, parking, shuttle info.</p>
-      </div>
-    </section>
-
-    <!-- WINDOW: Dress image preview -->
-    <section class="panel window" data-bg="assets/dress.jpg"></section>
-
-    <!-- TEXT: Dress -->
-    <section id="dress" class="panel text">
-      <div class="panel-inner">
-        <h2>Dress code</h2>
-        <p>Short guidance + any cultural notes.</p>
-      </div>
-    </section>
-
-    <!-- WINDOW: Registry image preview -->
-    <section class="panel window" data-bg="assets/registry.jpg"></section>
-
-    <!-- TEXT: Registry -->
-    <section id="registry" class="panel text">
-      <div class="panel-inner">
-        <h2>Registry</h2>
-        <p>Registry links (later).</p>
-      </div>
-    </section>
-
-  </main>
-
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
