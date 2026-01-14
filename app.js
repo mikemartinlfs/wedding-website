@@ -129,14 +129,12 @@ function updateAgeBlock(){
   if(!shouldShow && rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
 }
 
-
 async function refreshStatus(){
   if(!token){
     showInvalid("This invitation link is missing or invalid.");
     return null;
   }
 
-  // Track open (best effort)
   fetch(`/api/open?t=${encodeURIComponent(token)}`).catch(()=>{});
 
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
@@ -146,15 +144,11 @@ async function refreshStatus(){
   }
 
   const info=s.data;
-  
-  // const guestCountVal=Number(rsvpForm?.guest_count?.value || info?.defaults?.guest_count || 0);
-  // if(ageBlock) show(ageBlock, !!info.has_children && guestCountVal > 1);
 
   HAS_CHILDREN=!!info.has_children;
   if(!info.submitted){
     showRsvp(info.name);
     setFormValues(info.defaults || null);
-    // if(!info.has_children && rsvpForm?.guest_ages) rsvpForm.guest_ages.value="";
   } else {
     showConfirmed(info.name, info.response, info.can_edit);
   }
@@ -172,7 +166,6 @@ editBtn?.addEventListener("click", async ()=>{
 
   const info=s.data;
 
-  // Only allow edit if backend says can_edit
   if(!info.can_edit){
     showConfirmed(info.name, info.response, false);
     return;
@@ -225,20 +218,27 @@ rsvpForm?.attending?.addEventListener("change", updateAgeBlock);
 
 refreshStatus();
 
+/* =========================
+   Viewport-over-still-image logic
+   - viewportWindow: pinned image (NEVER moves)
+   - viewportMask: full-screen overlay with a moving cutout (THIS moves)
+   ========================= */
 (() => {
-  const viewportWindow=document.getElementById('viewportWindow');
-  const markers=Array.from(document.querySelectorAll('.panel.window[data-bg]'));
-  if(!viewportWindow || markers.length==0) return;
+  const viewportWindow=document.getElementById("viewportWindow");
+  const viewportMask=document.getElementById("viewportMask");
+  const markers=Array.from(document.querySelectorAll(".panel.window[data-bg]"));
+
+  if(!viewportWindow || !viewportMask || markers.length==0) return;
 
   const clamp=(v,min,max)=>Math.max(min, Math.min(max, v));
 
   const setBg=(bgPath)=>{
     if(!bgPath) return;
-    viewportWindow.style.setProperty('--bg', `url(${bgPath})`);
+    viewportWindow.style.setProperty("--bg", `url(${bgPath})`);
   };
 
-  // initial image
-  setBg(markers[0].getAttribute('data-bg'));
+  // Start on first image
+  setBg(markers[0].getAttribute("data-bg"));
 
   const pickCurrentMarker=()=>{
     const vh=window.innerHeight;
@@ -258,26 +258,24 @@ refreshStatus();
     return best;
   };
 
+  // 0 when marker top hits bottom of viewport; 1 when marker bottom hits top of viewport
   const markerProgress=(el)=>{
     const r=el.getBoundingClientRect();
     const vh=window.innerHeight;
     const total=r.height + vh;
-    const p=(vh - r.top) / total;     // 0..1-ish
-    return clamp(p, 0, 1);
+    return clamp((vh - r.top) / total, 0, 1);
   };
-
-  const travelPx=()=>Math.round(window.innerHeight * 0.55);
 
   const update=()=>{
     const current=pickCurrentMarker();
-    setBg(current.getAttribute('data-bg'));
+    setBg(current.getAttribute("data-bg"));
 
+    // Move the CUTOUT, not the image.
     const p=markerProgress(current);
-    const range=travelPx();
+    const range=Math.round(window.innerHeight * 0.55);
     const vy=Math.round((p - 0.5) * 2 * range);
 
-    // DIRECTLY MOVE THE FIXED WINDOW (no CSS var involvement)
-    viewportWindow.style.transform=`translate(-50%, calc(-50% + ${vy}px))`;
+    viewportMask.style.setProperty("--cutTop", `calc(50% - (var(--winH) / 2) + ${vy}px)`);
   };
 
   update();
@@ -292,6 +290,6 @@ refreshStatus();
     });
   };
 
-  window.addEventListener('scroll', onScroll, { passive:true });
-  window.addEventListener('resize', update, { passive:true });
+  window.addEventListener("scroll", onScroll, { passive:true });
+  window.addEventListener("resize", update, { passive:true });
 })();
