@@ -1,395 +1,62 @@
 :root{
-  /* Typography */
-  --fontBody: Inter, system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  --fontHead: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-
-  /* Palette */
-  --pageBg:#0f1a14;
-  --fg:#f4f0e6;
-  --muted:rgba(244,240,230,.74);
-
-  /* Surfaces */
-  --glass:rgba(10,10,10,.18);
-  --glassBorder:rgba(255,255,255,.14);
-
-  /* Window (cutout) size */
-  --winW:min(1400px, 96vw);
-  --winH:min(84vh, 860px);
-
-  /* Layout */
-  --maxW:920px;
-
-  /* Shadows */
-  --shadowSoft:0 18px 46px rgba(0,0,0,.28);
-
-  /* Overlay tuning */
-  --overlayAlpha:1; /* outside cutout is solid pageBg */
-  --cutShadow:0 26px 80px rgba(0,0,0,.55);
+  --bg:#f5f0dc;
+  --fg:#2f3b2f;
+  --accent:#bfa76a;
+  --fontHead:"Cormorant Garamond",serif;
+  --fontBody:Inter,sans-serif;
 }
-
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
 
 body{
   margin:0;
-  background:var(--pageBg);
-  color:var(--fg);
   font-family:var(--fontBody);
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-
-.hidden{ display:none !important; }
-
-h1,h2{
-  font-family:var(--fontHead);
-  letter-spacing:.2px;
-  margin:0 0 10px 0;
+  background:linear-gradient(#f7f3df,#efe6c8);
   color:var(--fg);
 }
 
-h1{ font-size:52px; line-height:1.02; font-weight:700; }
-h2{ font-size:32px; line-height:1.1; font-weight:600; }
-
-p{ margin:0 0 12px 0; }
-
-.meta{
-  color:var(--muted);
-  font-size:14px;
-}
-
-.lead{
-  font-size:16px;
-  line-height:1.55;
-  color:rgba(244,240,230,.92);
-}
-
-.hint{
-  margin-top:18px;
-  color:var(--muted);
-  font-size:13px;
-}
-
-/* Divider */
-.divider{
-  margin:18px 0 14px 0;
-  height:1px;
-  background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.22), rgba(255,255,255,0));
-  opacity:.9;
-}
-
-/* =========================
-   Side nav
-   ========================= */
-.side-nav{
-  position:fixed;
-  left:14px;
-  top:50%;
-  transform:translateY(-50%);
-  z-index:80;
-
+.screen{
+  min-height:100vh;
+  padding:24px;
   display:flex;
   flex-direction:column;
-  gap:8px;
-
-  padding:10px;
-  border-radius:16px;
-
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.35);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.side-nav a{
-  text-decoration:none;
-  color:rgba(255,255,255,.88);
-  font-size:14px;
-  padding:8px 10px;
-  border-radius:12px;
-  white-space:nowrap;
-  transition:background .12s ease, transform .12s ease;
-}
-
-.side-nav a:hover{
-  background:rgba(255,255,255,.10);
-  transform:translateX(1px);
-}
-
-.side-nav a.active{
-  background:rgba(255,255,255,.16);
-  color:#fff;
-}
-
-/* =========================
-   Panels (base)
-   ========================= */
-.panel{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
   justify-content:center;
-  padding:86px 22px;
-  position:relative;
 }
 
-/* =========================
-   Window panels (each section owns its background)
-   ========================= */
-.panel.window{
-  padding:0;
-  display:block;
-  position:relative;
-  background:var(--pageBg);
+.hidden{display:none}
 
-  /* long scroll range so the cutout can travel */
-  min-height:200vh;
+h1{
+  font-family:var(--fontHead);
+  font-size:38px;
+  text-align:center;
 }
 
-.panel.window .win-bg{
-  position:sticky;
-  top:0;
-  height:100vh;
+form label{display:block;margin-bottom:14px}
+
+input,select,textarea{
   width:100%;
-
-  /* IMPORTANT: image comes directly from the section variable */
-  background-image:var(--bg);
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-
-  z-index:0;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid #c7b987;
 }
 
-.panel.window .win-bg::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(1200px 700px at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,.28) 100%),
-    linear-gradient(180deg, rgba(15,26,20,.10), rgba(15,26,20,.25));
+button{
+  margin-top:12px;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  background:var(--accent);
+  font-weight:600;
 }
 
-/* =========================
-   Text panels (between images)
-   ========================= */
-.panel.text{
-  background:transparent;
-  z-index:20; /* above overlay */
-}
-
-.panel.text .panel-inner{
-  width:min(var(--maxW), 100%);
-  border-radius:22px;
-  padding:28px;
-
-  background:var(--glass);
-  border:1px solid var(--glassBorder);
-  box-shadow:var(--shadowSoft);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  position:relative;
-  z-index:21;
-}
-
-.panel.text .panel-inner::before{
-  content:"";
-  position:absolute;
-  left:22px;
-  right:22px;
-  top:14px;
-  height:1px;
-  background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.20), rgba(255,255,255,0));
-  opacity:.9;
-}
-
-/* =========================
-   Cards inside RSVP/confirmed
-   ========================= */
-.card{
-  margin-top:18px;
-  padding:16px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.22);
-}
-
-/* =========================
-   Forms
-   ========================= */
-.form{ margin-top:12px; }
-
-.grid{
+.tiles{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:14px;
 }
 
-.full{ grid-column:1 / -1; }
+.back{margin-top:40px}
 
-label{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  font-size:14px;
-  color:rgba(255,255,255,.88);
-}
-
-input,select,textarea{
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:14px;
-  padding:10px 12px;
-  font-size:14px;
-  outline:none;
-
-  background:rgba(0,0,0,.16);
-  color:rgba(255,255,255,.92);
-}
-
-input::placeholder,textarea::placeholder{
-  color:rgba(255,255,255,.50);
-}
-
-input:focus,select:focus,textarea:focus{
-  border-color:rgba(255,255,255,.34);
-  box-shadow:0 0 0 4px rgba(255,255,255,.10);
-}
-
-/* Buttons */
-button{
-  margin-top:14px;
-  border:0;
-  border-radius:14px;
-  padding:12px 14px;
-
-  background:#e6d5aa;
-  color:#1a140a;
-
-  font-size:14px;
-  font-weight:650;
-  cursor:pointer;
-  box-shadow:0 14px 28px rgba(0,0,0,.30);
-  transition:filter .12s ease, transform .06s ease;
-}
-
-button:hover{ filter:brightness(1.03); }
-button:active{ transform:translateY(1px); }
-
-/* Notices */
-.notice{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.18);
-  color:rgba(255,255,255,.92);
-}
-
-em{ color:rgba(244,240,230,.86); }
-
-/* =========================
-   Overlay that creates the moving “window”
-   4 solid panes + a shadow ring.
-   No mask-composite => no flicker.
-   ========================= */
-#viewportOverlay{
-  position:fixed;
-  inset:0;
-  z-index:10;      /* above images, below text */
-  pointer-events:none;
-}
-
-#viewportOverlay .pane{
-  position:absolute;
-  background:var(--pageBg);
-  opacity:var(--overlayAlpha);
-}
-
-#viewportOverlay .pane.top{
-  left:0; right:0; top:0;
-  height:var(--cutTop, 0px);
-}
-
-#viewportOverlay .pane.bottom{
-  left:0; right:0;
-  top:calc(var(--cutTop, 0px) + var(--cutH, 0px));
-  bottom:0;
-}
-
-#viewportOverlay .pane.left{
-  left:0;
-  top:var(--cutTop, 0px);
-  width:var(--cutLeft, 0px);
-  height:var(--cutH, 0px);
-}
-
-#viewportOverlay .pane.right{
-  left:calc(var(--cutLeft, 0px) + var(--cutW, 0px));
-  right:0;
-  top:var(--cutTop, 0px);
-  height:var(--cutH, 0px);
-}
-
-#viewportOverlay .cut-shadow{
-  position:absolute;
-  left:var(--cutLeft, 0px);
-  top:var(--cutTop, 0px);
-  width:var(--cutW, 0px);
-  height:var(--cutH, 0px);
-
-  border-radius:0;
-  box-shadow: var(--cutShadow);
-  background:transparent;
-}
-
-#viewportOverlay .cut-shadow::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.06),
-    inset 0 24px 60px rgba(0,0,0,.22);
-}
-
-/* =========================
-   Mobile
-   ========================= */
-@media (max-width:860px){
-  h1{ font-size:40px; }
-  h2{ font-size:28px; }
-
-  .grid{ grid-template-columns:1fr; }
-  .panel{ padding:76px 14px; }
-
-  .panel.text .panel-inner{
-    padding:22px 16px;
-    border-radius:18px;
-  }
-
-  .panel.text .panel-inner::before{
-    left:16px;
-    right:16px;
-    top:12px;
-  }
-
-  .side-nav{
-    left:10px;
-    right:10px;
-    top:auto;
-    bottom:10px;
-    transform:none;
-    flex-direction:row;
-    overflow:auto;
-    max-width:calc(100vw - 20px);
-    gap:6px;
-    justify-content:flex-start;
-  }
-
-  .side-nav a{ padding:10px 12px; }
-
-  .panel.window{ min-height:170vh; }
+.scrollHint{
+  text-align:center;
+  margin-top:20px;
+  opacity:.6;
 }
