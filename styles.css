@@ -1,23 +1,29 @@
 :root{
+  /* Typography */
   --fontBody: Inter, system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   --fontHead: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
+  /* Palette */
   --pageBg:#0f1a14;
   --fg:#f4f0e6;
   --muted:rgba(244,240,230,.74);
 
+  /* Surfaces */
   --glass:rgba(10,10,10,.18);
   --glassBorder:rgba(255,255,255,.14);
 
+  /* Window size */
   --winW:min(1400px, 96vw);
   --winH:min(84vh, 860px);
 
-  /* Rectangle window: no rounding, no border */
+  /* Clean rectangle */
   --winRadius:0px;
   --winFrame:0px;
 
+  /* Layout */
   --maxW:920px;
 
+  /* Shadows */
   --shadowWin:0 26px 80px rgba(0,0,0,.45);
   --shadowSoft:0 18px 46px rgba(0,0,0,.28);
 }
@@ -42,14 +48,30 @@ h1,h2{
   margin:0 0 10px 0;
   color:var(--fg);
 }
+
 h1{ font-size:52px; line-height:1.02; font-weight:700; }
 h2{ font-size:32px; line-height:1.1; font-weight:600; }
 
 p{ margin:0 0 12px 0; }
-.meta{ color:var(--muted); font-size:14px; }
-.lead{ font-size:16px; line-height:1.55; color:rgba(244,240,230,.92); }
-.hint{ margin-top:18px; color:var(--muted); font-size:13px; }
 
+.meta{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.lead{
+  font-size:16px;
+  line-height:1.55;
+  color:rgba(244,240,230,.92);
+}
+
+.hint{
+  margin-top:18px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* Divider */
 .divider{
   margin:18px 0 14px 0;
   height:1px;
@@ -76,8 +98,8 @@ p{ margin:0 0 12px 0; }
 
   border:1px solid rgba(255,255,255,.14);
   background:rgba(0,0,0,.35);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .side-nav a{
@@ -89,8 +111,16 @@ p{ margin:0 0 12px 0; }
   white-space:nowrap;
   transition:background .12s ease, transform .12s ease;
 }
-.side-nav a:hover{ background:rgba(255,255,255,.10); transform:translateX(1px); }
-.side-nav a.active{ background:rgba(255,255,255,.16); color:#fff; }
+
+.side-nav a:hover{
+  background:rgba(255,255,255,.10);
+  transform:translateX(1px);
+}
+
+.side-nav a.active{
+  background:rgba(255,255,255,.16);
+  color:#fff;
+}
 
 /* =========================
    Pinned image layer (never moves)
@@ -100,22 +130,24 @@ p{ margin:0 0 12px 0; }
   left:50%;
   top:50%;
   transform:translate(-50%, -50%);
+
   width:var(--winW);
   height:var(--winH);
+
   border-radius:0;
-  z-index:5;
   overflow:hidden;
+
+  z-index:5;
+  pointer-events:none;
 
   background-image:var(--bg);
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-
-  pointer-events:none;
 }
 
 /* =========================
-   Opaque overlay with a transparent rectangular cutout
+   Opaque overlay with transparent rectangular cutout
    (mask moves; image does not)
    ========================= */
 .viewport-mask{
@@ -127,67 +159,44 @@ p{ margin:0 0 12px 0; }
   --cutLeft: calc(50% - (var(--winW) / 2));
   --cutTop:  calc(50% - (var(--winH) / 2));
 
-  /* Outside should be opaque; use layered shading so it feels dimensional */
+  /* Opaque outside overlay */
   background:
     radial-gradient(1400px 520px at 50% 18%, rgba(0,0,0,.40), rgba(0,0,0,0) 70%),
     radial-gradient(1400px 520px at 50% 82%, rgba(0,0,0,.40), rgba(0,0,0,0) 70%),
     linear-gradient(180deg, rgba(15,26,20,.96), rgba(15,26,20,.78), rgba(15,26,20,.96));
 
-  /* Rect hole: everything outside is shown (overlay), inside is cut out (transparent) */
-  clip-path: polygon(
-    0 0,
-    100% 0,
+  /* Punch a RECTANGULAR hole using masking (reliable) */
+  -webkit-mask-image:
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0);
+  -webkit-mask-size:
     100% 100%,
-    0 100%,
-
+    var(--winW) var(--winH);
+  -webkit-mask-position:
     0 0,
+    var(--cutLeft) var(--cutTop);
+  -webkit-mask-repeat:no-repeat;
+  -webkit-mask-composite:xor;
 
-    0 0,
-    0 100%,
+  mask-image:
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0);
+  mask-size:
     100% 100%,
-    100% 0,
-    0 0
-  );
+    var(--winW) var(--winH);
+  mask-position:
+    0 0,
+    var(--cutLeft) var(--cutTop);
+  mask-repeat:no-repeat;
+  mask-composite:exclude;
 
-  /* Use even-odd path for reliable "hole" behavior */
-  clip-path: path(evenodd,
-    "M 0 0 H 100% V 100% H 0 Z
-     M var(--cutLeft) var(--cutTop)
-     H calc(var(--cutLeft) + var(--winW))
-     V calc(var(--cutTop) + var(--winH))
-     H var(--cutLeft)
-     Z"
-  );
-
-  will-change:clip-path;
+  will-change:mask-position;
 }
 
-/* Remove any visible frame/border around the cutout */
 .viewport-mask::after{ content:none; }
 
-/* Optional: subtle inner shading on the overlay right at the edge of the cutout
-   without drawing a “border” line. This is a soft vignette effect. */
-.viewport-mask::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-
-  /* This layer adds a gentle shadow around where the cutout is, but no hard line */
-  background:
-    radial-gradient(
-      closest-side at 50% 50%,
-      rgba(0,0,0,0) 0%,
-      rgba(0,0,0,0) 55%,
-      rgba(0,0,0,.22) 70%,
-      rgba(0,0,0,.30) 100%
-    );
-  opacity:.45;
-  mix-blend-mode:multiply;
-}
-
 /* =========================
-   Panels
+   Panels (base)
    ========================= */
 .panel{
   min-height:100vh;
@@ -217,6 +226,7 @@ p{ margin:0 0 12px 0; }
   z-index:20;
 }
 
+/* minimal readable “glass” */
 .panel.text .panel-inner{
   width:min(var(--maxW), 100%);
   border-radius:22px;
@@ -226,13 +236,14 @@ p{ margin:0 0 12px 0; }
   border:1px solid var(--glassBorder);
   box-shadow:var(--shadowSoft);
 
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   position:relative;
   z-index:2;
 }
 
+/* Top rule */
 .panel.text .panel-inner::before{
   content:"";
   position:absolute;
@@ -244,7 +255,9 @@ p{ margin:0 0 12px 0; }
   opacity:.9;
 }
 
-/* Cards / Forms */
+/* =========================
+   Cards
+   ========================= */
 .card{
   margin-top:18px;
   padding:16px;
@@ -253,6 +266,9 @@ p{ margin:0 0 12px 0; }
   background:rgba(0,0,0,.22);
 }
 
+/* =========================
+   Forms
+   ========================= */
 .form{ margin-top:12px; }
 
 .grid{
@@ -282,13 +298,16 @@ input,select,textarea{
   color:rgba(255,255,255,.92);
 }
 
-input::placeholder,textarea::placeholder{ color:rgba(255,255,255,.50); }
+input::placeholder,textarea::placeholder{
+  color:rgba(255,255,255,.50);
+}
 
 input:focus,select:focus,textarea:focus{
   border-color:rgba(255,255,255,.34);
   box-shadow:0 0 0 4px rgba(255,255,255,.10);
 }
 
+/* Buttons */
 button{
   margin-top:14px;
   border:0;
@@ -304,9 +323,11 @@ button{
   box-shadow:0 14px 28px rgba(0,0,0,.30);
   transition:filter .12s ease, transform .06s ease;
 }
+
 button:hover{ filter:brightness(1.03); }
 button:active{ transform:translateY(1px); }
 
+/* Notices */
 .notice{
   margin-top:12px;
   padding:10px 12px;
@@ -316,9 +337,12 @@ button:active{ transform:translateY(1px); }
   color:rgba(255,255,255,.92);
 }
 
+/* Make <em> readable on dark */
 em{ color:rgba(244,240,230,.86); }
 
-/* Mobile */
+/* =========================
+   Mobile
+   ========================= */
 @media (max-width:860px){
   h1{ font-size:40px; }
   h2{ font-size:28px; }
