@@ -20,7 +20,6 @@
   --maxW:920px;
 
   /* Shadows */
-  --shadowWin:0 26px 80px rgba(0,0,0,.45);
   --shadowSoft:0 18px 46px rgba(0,0,0,.28);
 
   /* Overlay tuning */
@@ -151,16 +150,17 @@ p{ margin:0 0 12px 0; }
   position:sticky;
   top:0;
   height:100vh;
+  width:100%;
 
+  /* IMPORTANT: image comes directly from the section variable */
+  background-image:var(--bg);
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
 
-  /* keep it behind overlay + text */
   z-index:0;
 }
 
-/* Optional: subtle vignette to help text read even if overlay is moving */
 .panel.window .win-bg::after{
   content:"";
   position:absolute;
@@ -292,7 +292,7 @@ em{ color:rgba(244,240,230,.86); }
 
 /* =========================
    Overlay that creates the moving “window”
-   Built from 4 solid panes + a shadow ring.
+   4 solid panes + a shadow ring.
    No mask-composite => no flicker.
    ========================= */
 #viewportOverlay{
@@ -340,14 +340,8 @@ em{ color:rgba(244,240,230,.86); }
   width:var(--cutW, 0px);
   height:var(--cutH, 0px);
 
-  /* no border, no rounding */
   border-radius:0;
-
-  /* “depth” only */
   box-shadow: var(--cutShadow);
-  filter:drop-shadow(0 0 0 rgba(0,0,0,0));
-
-  /* subtle edge darkening inward */
   background:transparent;
 }
 
@@ -397,6 +391,5 @@ em{ color:rgba(244,240,230,.86); }
 
   .side-nav a{ padding:10px 12px; }
 
-  /* Make window sections shorter on mobile if you want */
   .panel.window{ min-height:170vh; }
 }
