@@ -1,27 +1,21 @@
 :root{
-  /* Typography */
   --fontBody: Inter, system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   --fontHead: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
-  /* Palette */
   --pageBg:#0f1a14;
   --fg:#f4f0e6;
   --muted:rgba(244,240,230,.74);
 
-  /* Surfaces */
   --glass:rgba(10,10,10,.18);
   --glassBorder:rgba(255,255,255,.14);
 
-  /* Window frame */
   --winW:min(1400px, 96vw);
   --winH:min(84vh, 860px);
   --winRadius:24px;
   --winFrame:12px;
 
-  /* Layout */
   --maxW:920px;
 
-  /* Shadows */
   --shadowWin:0 26px 80px rgba(0,0,0,.45);
   --shadowSoft:0 18px 46px rgba(0,0,0,.28);
 }
@@ -107,18 +101,17 @@ p{ margin:0 0 12px 0; }
 }
 
 /* =========================
-   Fixed viewport image window (pinned image, moving viewport)
+   Pinned background image layer (never moves)
    ========================= */
 .viewport-window{
   position:fixed;
   left:50%;
   top:50%;
   transform:translate(-50%, -50%);
-
   width:var(--winW);
   height:var(--winH);
   border-radius:var(--winRadius);
-  z-index:10;
+  z-index:5;
 
   overflow:hidden;
 
@@ -127,6 +120,52 @@ p{ margin:0 0 12px 0; }
   background-position:center;
   background-repeat:no-repeat;
 
+  pointer-events:none;
+}
+
+/* =========================
+   Moving "viewport" mask layer:
+   Covers the whole screen with green overlay,
+   but has a rounded-rect hole that slides.
+   ========================= */
+.viewport-mask{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
+
+  /* window position controlled by JS */
+  --cutTop: calc(50% - (var(--winH) / 2));
+  --cutLeft: calc(50% - (var(--winW) / 2));
+
+  /* Solid overlay */
+  background:
+    radial-gradient(1200px 420px at 50% 10%, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
+    radial-gradient(1200px 420px at 50% 90%, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
+    linear-gradient(180deg, rgba(15,26,20,.92), rgba(15,26,20,.68), rgba(15,26,20,.92));
+
+  /* Cutout using clip-path path (Chrome/Edge/Safari) */
+  clip-path: path(evenodd,
+    "M 0 0 H 100% V 100% H 0 Z
+     M var(--cutLeft) var(--cutTop)
+     H calc(var(--cutLeft) + var(--winW))
+     V calc(var(--cutTop) + var(--winH))
+     H var(--cutLeft)
+     Z"
+  );
+
+  will-change: clip-path;
+}
+
+/* This frame is the visible "rim" of the viewport window */
+.viewport-mask::after{
+  content:"";
+  position:absolute;
+  left:var(--cutLeft);
+  top:var(--cutTop);
+  width:var(--winW);
+  height:var(--winH);
+  border-radius:var(--winRadius);
   border:var(--winFrame) solid rgba(14,14,16,.96);
 
   box-shadow:
@@ -136,7 +175,6 @@ p{ margin:0 0 12px 0; }
     var(--shadowWin);
 
   pointer-events:none;
-  will-change:transform;
 }
 
 /* =========================
@@ -151,30 +189,14 @@ p{ margin:0 0 12px 0; }
   position:relative;
 }
 
-/* =========================
-   Window sections = moving overlay (what "slides")
-   ========================= */
+/* Window markers just provide scroll ranges; keep them behind text */
 .panel.window{
-  min-height:140vh;   /* longer range makes the slide feel real */
+  min-height:140vh;
   padding:0;
   display:block;
   position:relative;
-  background:var(--pageBg);
-  z-index:5;
-}
-
-/* the overlay shading that scrolls over the pinned image */
-.panel.window::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-
-  background:
-    radial-gradient(1200px 420px at 50% 10%, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
-    radial-gradient(1200px 420px at 50% 90%, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
-    linear-gradient(180deg, rgba(15,26,20,.92), rgba(15,26,20,.68), rgba(15,26,20,.92));
-  opacity:.9;
+  z-index:1;
+  background:transparent;
 }
 
 /* =========================
@@ -183,7 +205,7 @@ p{ margin:0 0 12px 0; }
 .panel.text{
   background:transparent;
   position:relative;
-  z-index:20; /* above the pinned image */
+  z-index:20;
 }
 
 .panel.text .panel-inner{
@@ -213,9 +235,6 @@ p{ margin:0 0 12px 0; }
   opacity:.9;
 }
 
-/* =========================
-   Cards / Forms
-   ========================= */
 .card{
   margin-top:18px;
   padding:16px;
@@ -292,9 +311,6 @@ button:active{ transform:translateY(1px); }
 
 em{ color:rgba(244,240,230,.86); }
 
-/* =========================
-   Mobile
-   ========================= */
 @media (max-width:860px){
   h1{ font-size:40px; }
   h2{ font-size:28px; }
