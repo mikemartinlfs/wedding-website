@@ -11,8 +11,10 @@
 
   --winW:min(1400px, 96vw);
   --winH:min(84vh, 860px);
-  --winRadius:24px;
-  --winFrame:12px;
+
+  /* Rectangle window: no rounding, no border */
+  --winRadius:0px;
+  --winFrame:0px;
 
   --maxW:920px;
 
@@ -55,23 +57,29 @@ p{ margin:0 0 12px 0; }
   opacity:.9;
 }
 
-/* Side nav */
+/* =========================
+   Side nav
+   ========================= */
 .side-nav{
   position:fixed;
   left:14px;
   top:50%;
   transform:translateY(-50%);
   z-index:80;
+
   display:flex;
   flex-direction:column;
   gap:8px;
+
   padding:10px;
   border-radius:16px;
+
   border:1px solid rgba(255,255,255,.14);
   background:rgba(0,0,0,.35);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
 }
+
 .side-nav a{
   text-decoration:none;
   color:rgba(255,255,255,.88);
@@ -84,7 +92,9 @@ p{ margin:0 0 12px 0; }
 .side-nav a:hover{ background:rgba(255,255,255,.10); transform:translateX(1px); }
 .side-nav a.active{ background:rgba(255,255,255,.16); color:#fff; }
 
-/* Pinned image layer: MUST NEVER MOVE */
+/* =========================
+   Pinned image layer (never moves)
+   ========================= */
 .viewport-window{
   position:fixed;
   left:50%;
@@ -92,7 +102,7 @@ p{ margin:0 0 12px 0; }
   transform:translate(-50%, -50%);
   width:var(--winW);
   height:var(--winH);
-  border-radius:var(--winRadius);
+  border-radius:0;
   z-index:5;
   overflow:hidden;
 
@@ -104,7 +114,10 @@ p{ margin:0 0 12px 0; }
   pointer-events:none;
 }
 
-/* Full-screen overlay with a moving cutout */
+/* =========================
+   Opaque overlay with a transparent rectangular cutout
+   (mask moves; image does not)
+   ========================= */
 .viewport-mask{
   position:fixed;
   inset:0;
@@ -114,12 +127,29 @@ p{ margin:0 0 12px 0; }
   --cutLeft: calc(50% - (var(--winW) / 2));
   --cutTop:  calc(50% - (var(--winH) / 2));
 
+  /* Outside should be opaque; use layered shading so it feels dimensional */
   background:
-    radial-gradient(1200px 420px at 50% 10%, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
-    radial-gradient(1200px 420px at 50% 90%, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
-    linear-gradient(180deg, rgba(15,26,20,.92), rgba(15,26,20,.68), rgba(15,26,20,.92));
+    radial-gradient(1400px 520px at 50% 18%, rgba(0,0,0,.40), rgba(0,0,0,0) 70%),
+    radial-gradient(1400px 520px at 50% 82%, rgba(0,0,0,.40), rgba(0,0,0,0) 70%),
+    linear-gradient(180deg, rgba(15,26,20,.96), rgba(15,26,20,.78), rgba(15,26,20,.96));
 
-  /* Outer rect minus inner rect */
+  /* Rect hole: everything outside is shown (overlay), inside is cut out (transparent) */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+
+    0 0,
+
+    0 0,
+    0 100%,
+    100% 100%,
+    100% 0,
+    0 0
+  );
+
+  /* Use even-odd path for reliable "hole" behavior */
   clip-path: path(evenodd,
     "M 0 0 H 100% V 100% H 0 Z
      M var(--cutLeft) var(--cutTop)
@@ -128,27 +158,37 @@ p{ margin:0 0 12px 0; }
      H var(--cutLeft)
      Z"
   );
+
   will-change:clip-path;
 }
 
-/* Draw the frame at the cutout position */
-.viewport-mask::after{
+/* Remove any visible frame/border around the cutout */
+.viewport-mask::after{ content:none; }
+
+/* Optional: subtle inner shading on the overlay right at the edge of the cutout
+   without drawing a “border” line. This is a soft vignette effect. */
+.viewport-mask::before{
   content:"";
   position:absolute;
-  left:var(--cutLeft);
-  top:var(--cutTop);
-  width:var(--winW);
-  height:var(--winH);
-  border-radius:var(--winRadius);
-  border:var(--winFrame) solid rgba(14,14,16,.96);
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,.65),
-    inset 0 0 0 1px rgba(255,255,255,.10),
-    inset 0 18px 44px rgba(0,0,0,.20),
-    var(--shadowWin);
+  inset:0;
+  pointer-events:none;
+
+  /* This layer adds a gentle shadow around where the cutout is, but no hard line */
+  background:
+    radial-gradient(
+      closest-side at 50% 50%,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,0) 55%,
+      rgba(0,0,0,.22) 70%,
+      rgba(0,0,0,.30) 100%
+    );
+  opacity:.45;
+  mix-blend-mode:multiply;
 }
 
-/* Panels */
+/* =========================
+   Panels
+   ========================= */
 .panel{
   min-height:100vh;
   display:flex;
@@ -158,7 +198,7 @@ p{ margin:0 0 12px 0; }
   position:relative;
 }
 
-/* Window sections are ONLY scroll-range markers now (no images here) */
+/* Window sections are scroll-range markers only */
 .panel.window{
   min-height:140vh;
   padding:0;
@@ -168,7 +208,9 @@ p{ margin:0 0 12px 0; }
   background:transparent;
 }
 
-/* Text panels */
+/* =========================
+   Text panels
+   ========================= */
 .panel.text{
   background:transparent;
   position:relative;
@@ -179,11 +221,14 @@ p{ margin:0 0 12px 0; }
   width:min(var(--maxW), 100%);
   border-radius:22px;
   padding:28px;
+
   background:var(--glass);
   border:1px solid var(--glassBorder);
   box-shadow:var(--shadowSoft);
+
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
+
   position:relative;
   z-index:2;
 }
@@ -199,7 +244,7 @@ p{ margin:0 0 12px 0; }
   opacity:.9;
 }
 
-/* Cards + forms */
+/* Cards / Forms */
 .card{
   margin-top:18px;
   padding:16px;
@@ -232,6 +277,7 @@ input,select,textarea{
   padding:10px 12px;
   font-size:14px;
   outline:none;
+
   background:rgba(0,0,0,.16);
   color:rgba(255,255,255,.92);
 }
@@ -248,8 +294,10 @@ button{
   border:0;
   border-radius:14px;
   padding:12px 14px;
+
   background:#e6d5aa;
   color:#1a140a;
+
   font-size:14px;
   font-weight:650;
   cursor:pointer;
@@ -270,6 +318,7 @@ button:active{ transform:translateY(1px); }
 
 em{ color:rgba(244,240,230,.86); }
 
+/* Mobile */
 @media (max-width:860px){
   h1{ font-size:40px; }
   h2{ font-size:28px; }
