@@ -26,17 +26,18 @@
 
     <!-- RSVP (TOP) -->
     <section id="rsvpScreen" class="section section--rsvp">
-      <div class="wrap">
-        <div class="paper paper--card">
+      <!-- Full-bleed hero aligned to top corners of phone screen -->
+      <header class="rsvpHeroFullBleed" style="background-image:url('assets/hero.jpg');">
+        <div class="rsvpHeroTitleWrap">
+          <h1 class="heroTitle heroTitle--overImage">One Invitation to Gather Them All</h1>
+        </div>
+      </header>
 
-          <!-- HERO BACKGROUND (no extra image block, no fade) -->
-          <header class="rsvpHero" style="background-image:url('assets/hero.jpg');">
-            <div class="rsvpHeroInner">
-              <h1 class="heroTitle heroTitle--onHero">One Invitation to Gather Them All</h1>
-              <h2 class="heroSub heroSub--onHero">Michael & Avneet's Wedding</h2>
-              <p class="meta meta--onHero">April 26, 2026 · Stafford, Virginia</p>
-            </div>
-          </header>
+      <!-- Everything below hero stays in the centered wrap -->
+      <div class="wrap">
+        <div class="paper paper--card paper--cardRsvp">
+          <h2 class="heroSub heroSub--small">Michael & Avneet's Wedding</h2>
+          <p class="meta meta--small">April 26, 2026 · Stafford, Virginia</p>
 
           <div class="divider"></div>
 
@@ -118,7 +119,6 @@
         <div class="content">
           <h1 class="sectionTitle">WELCOME</h1>
 
-          <!-- FULL-BLEED BANNER (no rounding, no fade, edge-to-edge) -->
           <div class="fullBleedBanner" style="background-image:url('assets/details.jpg');" aria-label="Our wedding venue"></div>
 
           <div class="bodyText">
