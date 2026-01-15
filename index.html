@@ -10,149 +10,230 @@
 </head>
 
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <div class="brand-title">MICHAEL &amp; AVNEET</div>
-      <div class="brand-sub">APRIL 26, 2026 &nbsp;·&nbsp; 101 DAYS TO GO!</div>
-    </div>
-
-    <nav class="top-tabs" aria-label="Site navigation">
-      <a href="#" data-tab="home" class="tab active" id="tabHome">HOME</a>
-      <a href="#details" data-tab="details" class="tab" id="tabDetails">DETAILS</a>
-      <a href="#travel" data-tab="travel" class="tab" id="tabTravel">TRAVEL</a>
-      <a href="#dress" data-tab="dress" class="tab" id="tabDress">DRESS</a>
-      <a href="#registry" data-tab="registry" class="tab" id="tabRegistry">REGISTRY</a>
-      <a href="#rsvp" data-tab="rsvp" class="tab" id="tabRsvp">RSVP</a>
-    </nav>
-  </header>
-
-  <main class="page">
+  <main id="scroller" class="scroller">
 
     <!-- INVALID TOKEN -->
-    <section id="invalidScreen" class="screen hidden">
-      <div class="content">
-        <h2 class="page-title">RSVP</h2>
-        <div id="invalidToken" class="notice">
-          This invitation link is missing or invalid; please use the original link sent to access our wedding website.
+    <section id="invalidScreen" class="section hidden">
+      <div class="wrap">
+        <div class="paper paper--card">
+          <h1 class="heroTitle">Invitation link needed</h1>
+          <p id="invalidToken" class="meta" style="margin-top:10px;">
+            This invitation link is missing or invalid; please use the original link sent to access our wedding website.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- RSVP SCREEN (shown first if not submitted) -->
-    <section id="rsvpScreen" class="screen hidden">
-      <div class="content">
-        <h2 class="page-title">RSVP</h2>
+    <!-- RSVP (TOP) -->
+    <section id="rsvpScreen" class="section section--rsvp">
+      <!-- Full-bleed hero aligned to top corners of phone screen -->
+      <header class="rsvpHeroFullBleed" style="background-image:url('assets/hero.jpg');">
+        <div class="rsvpHeroTitleWrap">
+          <h1 class="heroTitle heroTitle--overImage">One Invitation to Gather Them All</h1>
+        </div>
+      </header>
 
-        <div id="rsvpView" class="card">
-          <p class="lead">Every great adventure starts with a cast of characters. We want you to be a part of ours.</p>
+      <!-- Everything below hero stays in the centered wrap -->
+      <div class="wrap">
+        <div class="paper paper--card paper--cardRsvp">
+          <h2 class="heroSub heroSub--small">Michael & Avneet's Wedding</h2>
+          <p class="meta meta--small">April 26, 2026 · Stafford, Virginia</p>
 
-          <form id="rsvpForm" class="form">
-            <h3 id="inviteName" class="invite-line"></h3>
-            <p id="inviteSub" class="meta"></p>
+          <div class="divider"></div>
 
-            <div class="grid">
-              <label>
-                Attending?
-                <select name="attending" required>
-                  <option value="" disabled selected>Select</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </select>
-              </label>
+          <div id="rsvpView" class="card">
+            <p class="lead">Every great adventure starts with a cast of characters. We want you to be a part of ours.</p>
 
-              <label>
-                Number attending
-                <input name="guest_count" type="number" min="0" max="10" required />
-              </label>
+            <form id="rsvpForm" class="form">
+              <h2 id="inviteName" class="inviteName"></h2>
+              <p id="inviteSub" class="inviteSub"></p>
 
-              <div id="ageBlock" class="full hidden">
-                <p class="meta" style="margin:0 0 6px 0;">There will be a supervised kids’ area at the reception.</p>
-                <p class="meta" style="margin:0 0 10px 0;">
-                  To prepare properly for our smallest adventurers, please list your children’s ages separated by commas.
-                  (This information is required by the company managing the area.)
-                </p>
+              <div class="grid">
+                <label>
+                  Attending?
+                  <select name="attending" required>
+                    <option value="" disabled>Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </label>
 
-                <label class="full" style="margin:0;">
-                  Children’s ages (comma-separated)
-                  <input name="guest_ages" placeholder="6, 4, 2" />
+                <label>
+                  Number attending
+                  <input name="guest_count" type="number" min="0" max="10" required />
+                </label>
+
+                <div id="ageBlock" class="full hidden">
+                  <p class="meta" style="margin:0 0 6px 0; text-align:left;">There will be a supervised kids’ area at the reception.</p>
+                  <p class="meta" style="margin:0 0 10px 0; text-align:left;">
+                    To prepare properly for our smallest adventurers, please list your children’s ages separated by commas.
+                    (This information is required by the company managing the area.)
+                  </p>
+
+                  <label class="full" style="margin:0;">
+                    Children’s ages (comma-separated)
+                    <input name="guest_ages" placeholder="6, 4, 2" />
+                  </label>
+                </div>
+
+                <label class="full">
+                  Any special requests for your journey? <em>(Dietary needs, accessibility, or anything else we should know.)</em>
+                  <textarea name="notes" rows="3"></textarea>
                 </label>
               </div>
 
-              <label class="full">
-                Any special requests for your journey? <em>(Dietary needs, accessibility, or anything else we should know.)</em>
-                <textarea name="notes" rows="3"></textarea>
-              </label>
-            </div>
+              <button type="submit" class="btn">Submit RSVP</button>
+              <div id="submitMsg" class="notice hidden"></div>
+            </form>
+          </div>
 
-            <button type="submit">Submit RSVP</button>
-            <div id="submitMsg" class="notice hidden"></div>
-          </form>
+          <div class="swipeCue" aria-hidden="true">
+            <div class="swipeText">Scroll down for more info</div>
+            <div class="swipeArrow"></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- HOME SCREEN (shown first if RSVP already submitted) -->
-    <section id="homeScreen" class="screen">
-      <div class="content">
-        <h2 class="page-title">WELCOME</h2>
+    <!-- WELCOME / HOME -->
+    <section id="homeScreen" class="section section--editorial" data-nav="Home">
+      <div class="wrap">
+        <header class="siteHeader">
+          <div class="siteTitle">MICHAEL &amp; AVNEET</div>
+          <div class="siteMeta">
+            <span>APRIL 26, 2026</span>
+            <span class="dot">·</span>
+            <span id="countdownText">—</span>
+          </div>
 
-        <!-- WOOD FRAME IMAGE (Option #1) -->
-        <div class="wood-frame">
-          <img class="hero-img" src="assets/details.jpg" alt="Wedding venue" />
+          <nav class="tabs" aria-label="Wedding site navigation">
+            <button class="tabLink active" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink" type="button" data-target="details">Details</button>
+            <button class="tabLink" type="button" data-target="travel">Travel</button>
+            <button class="tabLink" type="button" data-target="dress">Dress</button>
+            <button class="tabLink" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">WELCOME</h1>
+
+          <div class="fullBleedBanner" style="background-image:url('assets/details.jpg');" aria-label="Our wedding venue"></div>
+
+          <div class="bodyText">
+            <p class="bodyP">
+              Everything you’ll need is below. Use the tabs above to jump to a section, or keep scrolling.
+            </p>
+          </div>
+
+          <div id="confirmedCard" class="confirmed hidden">
+            <div class="confirmedHeader">
+              <div class="confirmedTitle">RSVP RECEIVED</div>
+              <div class="confirmedMeta" id="confirmedMeta"></div>
+            </div>
+
+            <div class="confirmedGrid">
+              <div><strong>Attending:</strong> <span id="c_attending"></span></div>
+              <div><strong>Guest count:</strong> <span id="c_guest_count"></span></div>
+              <div><strong>Ages:</strong> <span id="c_guest_ages"></span></div>
+              <div><strong>Notes:</strong> <span id="c_notes"></span></div>
+            </div>
+
+            <button id="editBtn" class="btn btn--ghost hidden" type="button">Edit RSVP</button>
+          </div>
         </div>
-
-        <p class="home-note">
-          Everything you’ll need is below. Use the tabs above to jump to a section, or keep scrolling.
-        </p>
-
-        <div class="card compact">
-          <div class="row"><strong>Attending:</strong> <span id="c_attending"></span></div>
-          <div class="row"><strong>Guest count:</strong> <span id="c_guest_count"></span></div>
-          <div class="row"><strong>Ages:</strong> <span id="c_guest_ages"></span></div>
-          <div class="row"><strong>Notes:</strong> <span id="c_notes"></span></div>
-          <p class="meta" id="confirmedMeta" style="margin-top:10px;"></p>
-        </div>
-
-        <button id="editBtn" class="hidden" type="button">Edit RSVP</button>
       </div>
     </section>
 
     <!-- DETAILS -->
-    <section id="details" class="screen">
-      <div class="content">
-        <h2 class="page-title">DETAILS</h2>
-        <div class="card">
-          <p>Ceremony time, reception time, venue address, etc.</p>
+    <section id="details" class="section section--editorial" data-nav="Details">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink active" type="button" data-target="details">Details</button>
+            <button class="tabLink" type="button" data-target="travel">Travel</button>
+            <button class="tabLink" type="button" data-target="dress">Dress</button>
+            <button class="tabLink" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">DETAILS</h1>
+          <div class="bodyText">
+            <p class="bodyP">Ceremony time, reception time, venue address, etc.</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- TRAVEL -->
-    <section id="travel" class="screen">
-      <div class="content">
-        <h2 class="page-title">TRAVEL</h2>
-        <div class="card">
-          <p>Hotel block, airports, parking, shuttle info.</p>
+    <section id="travel" class="section section--editorial" data-nav="Travel">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink" type="button" data-target="details">Details</button>
+            <button class="tabLink active" type="button" data-target="travel">Travel</button>
+            <button class="tabLink" type="button" data-target="dress">Dress</button>
+            <button class="tabLink" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">TRAVEL</h1>
+          <div class="bodyText">
+            <p class="bodyP">Hotel block, airports, parking, shuttle info.</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- DRESS -->
-    <section id="dress" class="screen">
-      <div class="content">
-        <h2 class="page-title">DRESS</h2>
-        <div class="card">
-          <p>Short guidance + any cultural notes.</p>
+    <section id="dress" class="section section--editorial" data-nav="Dress">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink" type="button" data-target="details">Details</button>
+            <button class="tabLink" type="button" data-target="travel">Travel</button>
+            <button class="tabLink active" type="button" data-target="dress">Dress</button>
+            <button class="tabLink" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">DRESS CODE</h1>
+          <div class="bodyText">
+            <p class="bodyP">Short guidance + any cultural notes.</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- REGISTRY -->
-    <section id="registry" class="screen">
-      <div class="content">
-        <h2 class="page-title">REGISTRY</h2>
-        <div class="card">
-          <p>Registry links (later).</p>
+    <section id="registry" class="section section--editorial" data-nav="Registry">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink" type="button" data-target="details">Details</button>
+            <button class="tabLink" type="button" data-target="travel">Travel</button>
+            <button class="tabLink" type="button" data-target="dress">Dress</button>
+            <button class="tabLink active" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">REGISTRY</h1>
+          <div class="bodyText">
+            <p class="bodyP">Registry links (later).</p>
+          </div>
         </div>
       </div>
     </section>
