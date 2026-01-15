@@ -24,6 +24,7 @@ const c_guest_ages=document.getElementById("c_guest_ages");
 const c_notes=document.getElementById("c_notes");
 
 const editBtn=document.getElementById("editBtn");
+const countdownText=document.getElementById("countdownText");
 
 let HAS_CHILDREN=false;
 let didInitialLandingScroll=false;
@@ -104,7 +105,20 @@ function showValidScreens(){
   show(homeScreen,true);
 }
 
+function updateCountdown(){
+  if(!countdownText) return;
+  const weddingISO="2026-04-26T00:00:00-05:00";
+  const target=Date.parse(weddingISO);
+  if(Number.isNaN(target)){ countdownText.textContent=""; return; }
+  const now=Date.now();
+  const diff=target-now;
+  const days=Math.ceil(diff/(1000*60*60*24));
+  countdownText.textContent=days>=0 ? `${days} DAYS TO GO!` : "JUST MARRIED";
+}
+
 async function refreshStatus(){
+  updateCountdown();
+
   if(!token){
     showInvalid("This invitation link is missing or invalid; please use the original link sent to access our wedding website.");
     return null;
@@ -125,17 +139,14 @@ async function refreshStatus(){
   HAS_CHILDREN=!!info.has_children;
   setHeader(info.name);
 
-  // Not submitted -> RSVP is the “start”; Home is below and reachable by scroll.
   if(!info.submitted){
     show(confirmedCard,false);
     show(editBtn,false);
 
-    // Prefill from defaults if present
     if(info.defaults) setFormValues(info.defaults);
     updateAgeBlock();
     clearSubmitMsg();
 
-    // Ensure we start at RSVP on first load (unless they already scrolled)
     if(!didInitialLandingScroll){
       didInitialLandingScroll=true;
       scrollToSection(rsvpScreen,"auto");
@@ -144,7 +155,6 @@ async function refreshStatus(){
     return info;
   }
 
-  // Submitted -> Home becomes the landing page
   show(confirmedCard,true);
   fillConfirmed(info.response || null);
 
@@ -163,8 +173,8 @@ async function refreshStatus(){
   return info;
 }
 
-/* Home tile navigation -> scroll to target section */
-document.querySelectorAll(".tile[data-target]").forEach(btn=>{
+/* Welcome nav links -> scroll */
+document.querySelectorAll(".navLink[data-target]").forEach(btn=>{
   btn.addEventListener("click",()=>{
     const id=btn.getAttribute("data-target");
     const el=document.getElementById(id);
@@ -172,14 +182,14 @@ document.querySelectorAll(".tile[data-target]").forEach(btn=>{
   });
 });
 
-/* Back to tiles buttons */
-document.querySelectorAll(".backToTiles").forEach(btn=>{
+/* Back buttons */
+document.querySelectorAll(".backToWelcome").forEach(btn=>{
   btn.addEventListener("click",()=>{
     scrollToSection(homeScreen,"smooth");
   });
 });
 
-/* Edit RSVP from Home -> scroll to RSVP + prefill with response */
+/* Edit RSVP from Welcome -> scroll up + prefill */
 editBtn?.addEventListener("click",async ()=>{
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
   if(!s.ok){ showInvalid(s.data?.error || `Error (${s.status})`); return; }
@@ -187,7 +197,6 @@ editBtn?.addEventListener("click",async ()=>{
   const info=s.data;
 
   if(!info.can_edit){
-    // Keep them on Home; just don't jump them into edit mode
     await refreshStatus();
     return;
   }
@@ -200,7 +209,7 @@ editBtn?.addEventListener("click",async ()=>{
   scrollToSection(rsvpScreen,"smooth");
 });
 
-/* Submit RSVP -> save -> refresh -> land on Home (tiles) */
+/* Submit RSVP -> save -> refresh -> land on Welcome */
 rsvpForm?.addEventListener("submit",async (e)=>{
   e.preventDefault();
   clearSubmitMsg();
@@ -227,7 +236,6 @@ rsvpForm?.addEventListener("submit",async (e)=>{
     submitMsg.classList.remove("hidden");
   }
 
-  // Refresh status and then land on Home
   await refreshStatus();
   scrollToSection(homeScreen,"smooth");
 });
@@ -235,4 +243,5 @@ rsvpForm?.addEventListener("submit",async (e)=>{
 rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
 rsvpForm?.attending?.addEventListener("change",updateAgeBlock);
 
+updateCountdown();
 refreshStatus();
