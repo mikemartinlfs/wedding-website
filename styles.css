@@ -40,6 +40,7 @@ body{
   scroll-snap-type:y mandatory;
 }
 
+/* For the RSVP page we want a true top-anchored full-bleed hero */
 .section{
   min-height:100vh;
   scroll-snap-align:start;
@@ -48,9 +49,64 @@ body{
   padding:26px 14px;
 }
 
-.wrap{ width:min(920px, 100%); }
+.section--rsvp{
+  padding:0;              /* remove top gap entirely */
+  display:block;          /* allow hero + content stack */
+}
+
+.wrap{ width:min(920px, 100%); margin:0 auto; }
 .paper{ width:100%; }
 
+/* FULL-BLEED HERO AT TOP, EDGE-TO-EDGE */
+.rsvpHeroFullBleed{
+  width:100vw;
+  height:clamp(220px, 32vh, 320px);
+
+  margin-left:calc(50% - 50vw);
+  margin-right:calc(50% - 50vw);
+
+  background-size:cover;
+  background-position:center top;
+  background-repeat:no-repeat;
+
+  position:relative;
+}
+
+.rsvpHeroFullBleed::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.18) 55%, rgba(0,0,0,.08)),
+    radial-gradient(900px 480px at 50% 15%, rgba(0,0,0,.18), rgba(0,0,0,.50));
+  pointer-events:none;
+}
+
+/* Title on image (smaller, fits phones) */
+.rsvpHeroTitleWrap{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:22px 14px 0 14px;
+}
+
+.heroTitle{
+  font-family:var(--fontHead);
+  letter-spacing:.2px;
+  margin:0;
+  text-align:center;
+}
+
+.heroTitle--overImage{
+  color:#f7f2e2;
+  text-shadow:0 10px 26px rgba(0,0,0,.45);
+  font-size:clamp(34px, 7vw, 44px);
+  line-height:1.03;
+}
+
+/* Card under hero */
 .paper--card{
   border-radius:22px;
   padding:18px 18px 22px 18px;
@@ -61,49 +117,21 @@ body{
   -webkit-backdrop-filter: blur(6px);
 }
 
-/* RSVP header as image background */
-.rsvpHero{
-  border-radius:18px;
-  overflow:hidden;
-  background-size:cover;
-  background-position:center;
-  position:relative;
-  padding:18px 14px;
+.paper--cardRsvp{
+  margin-top:-22px;       /* pulls the card slightly into the hero like a modern overlay */
+  border-top-left-radius:22px;
+  border-top-right-radius:22px;
 }
 
-.rsvpHero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,.52), rgba(0,0,0,.18)),
-    radial-gradient(1000px 500px at 50% 30%, rgba(0,0,0,.18), rgba(0,0,0,.45));
-  pointer-events:none;
-}
-
-.rsvpHeroInner{
-  position:relative;
-  z-index:1;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  align-items:center;
-}
-
-/* RSVP typography */
-.heroTitle{
-  font-family:var(--fontHead);
-  font-size:44px;
-  letter-spacing:.2px;
-  margin:0;
-  text-align:center;
-}
-
+/* Subheader under image (smaller) */
 .heroSub{
   font-family:var(--fontHead);
-  font-size:28px;
   margin:0;
   text-align:center;
+}
+
+.heroSub--small{
+  font-size:clamp(22px, 5.4vw, 28px);
 }
 
 .meta{
@@ -113,20 +141,13 @@ body{
   margin:0;
 }
 
-.heroTitle--onHero,
-.heroSub--onHero{
-  color:#f7f2e2;
-  text-shadow:0 10px 26px rgba(0,0,0,.35);
-}
-
-.meta--onHero{
-  color:rgba(247,242,226,.82);
-  text-shadow:0 10px 26px rgba(0,0,0,.28);
+.meta--small{
+  font-size:13px;
 }
 
 /* Divider */
 .divider{
-  margin:16px 0 14px 0;
+  margin:14px 0 12px 0;
   height:1px;
   background:linear-gradient(90deg, rgba(0,0,0,0), rgba(122,106,58,.30), rgba(0,0,0,0));
   opacity:.9;
@@ -134,7 +155,7 @@ body{
 
 /* Cards */
 .card{
-  margin-top:14px;
+  margin-top:12px;
   padding:16px;
   border-radius:18px;
   border:1px solid rgba(56,72,49,.14);
@@ -142,7 +163,7 @@ body{
 }
 
 .lead{
-  font-size:16px;
+  font-size:15.5px;
   line-height:1.55;
   color:rgba(43,52,41,.92);
   text-align:left;
@@ -153,8 +174,8 @@ body{
 
 .inviteName{
   font-family:var(--fontHead);
-  font-size:26px;
-  margin:14px 0 8px 0;
+  font-size:24px;
+  margin:12px 0 8px 0;
   text-align:left;
 }
 
@@ -237,7 +258,7 @@ em{ color:rgba(43,52,41,.82); }
 
 /* Swipe cue */
 .swipeCue{
-  margin-top:14px;
+  margin-top:12px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -366,7 +387,7 @@ em{ color:rgba(43,52,41,.82); }
   text-align:left;
 }
 
-/* Full-bleed banner (edge-to-edge, no rounding, no fade) */
+/* Home banner (edge-to-edge, no rounding, no fade) */
 .fullBleedBanner{
   width:100vw;
   height:clamp(210px, 26vh, 300px);
@@ -378,7 +399,6 @@ em{ color:rgba(43,52,41,.82); }
   background-position:center;
   background-repeat:no-repeat;
 
-  box-shadow:none;
   border-radius:0;
 }
 
@@ -421,8 +441,5 @@ em{ color:rgba(43,52,41,.82); }
   .siteTitle{ font-size:40px; letter-spacing:2.4px; }
   .tabs{ gap:14px; }
   .tabLink{ letter-spacing:1.6px; }
-  .heroTitle{ font-size:40px; }
-  .heroSub{ font-size:26px; }
-  .inviteName{ font-size:24px; }
-  .rsvpHero{ border-radius:16px; }
+  .inviteName{ font-size:23px; }
 }
