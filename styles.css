@@ -1,19 +1,16 @@
 :root{
-  /* Typography */
   --fontBody: Inter, system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   --fontHead: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
-  /* Shire-ish palette */
+  /* Shire/Hobbiton light palette */
   --pageBg:#f6f0dc;
   --fg:#2b3429;
   --muted:rgba(43,52,41,.72);
 
-  --card:rgba(255,255,255,.72);
+  --card:rgba(255,255,255,.74);
   --cardBorder:rgba(56,72,49,.18);
 
   --accent:#bfa76a;
-  --accentDark:#7a6a3a;
-
   --shadowSoft:0 18px 46px rgba(34,24,10,.18);
 }
 
@@ -22,12 +19,12 @@ html,body{ height:100%; }
 
 body{
   margin:0;
+  font-family:var(--fontBody);
+  color:var(--fg);
   background:
     radial-gradient(900px 560px at 10% 0%, rgba(191,167,106,.18), rgba(0,0,0,0) 60%),
     radial-gradient(800px 520px at 90% 20%, rgba(122,106,58,.14), rgba(0,0,0,0) 58%),
     linear-gradient(180deg, #fbf6e5, var(--pageBg));
-  color:var(--fg);
-  font-family:var(--fontBody);
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
@@ -66,8 +63,16 @@ p{ margin:0 0 12px 0; }
   opacity:.9;
 }
 
-.screen{
+.scroller{
+  height:100vh;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  scroll-snap-type:y mandatory;
+}
+
+.section{
   min-height:100vh;
+  scroll-snap-align:start;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -122,9 +127,7 @@ input,select,textarea{
   color:rgba(43,52,41,.95);
 }
 
-input::placeholder,textarea::placeholder{
-  color:rgba(43,52,41,.45);
-}
+input::placeholder,textarea::placeholder{ color:rgba(43,52,41,.45); }
 
 input:focus,select:focus,textarea:focus{
   border-color:rgba(122,106,58,.55);
@@ -183,6 +186,33 @@ em{ color:rgba(43,52,41,.82); }
   box-shadow:0 14px 28px rgba(34,24,10,.12);
   font-weight:650;
   color:rgba(43,52,41,.92);
+}
+
+/* Swipe cue */
+.swipeCue{
+  margin-top:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  opacity:.75;
+  user-select:none;
+}
+
+.swipeText{ font-size:13px; color:var(--muted); }
+
+.swipeArrow{
+  width:10px;
+  height:10px;
+  border-right:2px solid rgba(43,52,41,.55);
+  border-bottom:2px solid rgba(43,52,41,.55);
+  transform:rotate(45deg);
+  animation:bob 1.25s ease-in-out infinite;
+}
+
+@keyframes bob{
+  0%,100%{ transform:translateY(0) rotate(45deg); }
+  50%{ transform:translateY(6px) rotate(45deg); }
 }
 
 @media (max-width:420px){
