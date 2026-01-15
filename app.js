@@ -88,15 +88,23 @@ function applyRsvpPrefill(resp){
   if(!rsvpForm) return;
 
   const attending=String(resp?.attending || "").trim().toLowerCase();
+  const safeAttending=(attending==="yes" || attending==="no") ? attending : "";
+
   const guest_count=resp?.guest_count ?? "";
   const guest_ages=resp?.guest_ages ?? "";
   const notes=resp?.notes ?? "";
 
-  rsvpForm.attending.value=attending;
+  rsvpForm.attending.value=safeAttending;
   rsvpForm.guest_count.value=String(guest_count);
   if(rsvpForm.guest_ages) rsvpForm.guest_ages.value=String(guest_ages);
   rsvpForm.notes.value=String(notes);
 
+  updateAgeBlock();
+}
+
+function ensureDefaultPrefillWhenMissing(){
+  if(!rsvpForm) return;
+  if(!String(rsvpForm.guest_count.value || "").trim()) rsvpForm.guest_count.value="1";
   updateAgeBlock();
 }
 
@@ -154,7 +162,8 @@ async function refreshStatus(){
 
   HAS_CHILDREN=!!info.has_children;
 
-  setInviteHeader(info.name);
+  // Always restore personalization
+  setInviteHeader(info.name || "");
 
   if(!info.submitted){
     show(confirmedCard,false);
@@ -162,7 +171,12 @@ async function refreshStatus(){
 
     clearSubmitMsg();
     resetRsvpFormToBlank();
+
+    // Restore prefill behavior:
+    // - if defaults exist, use them
+    // - otherwise default guest_count to 1
     if(info.defaults) applyRsvpPrefill(info.defaults);
+    else ensureDefaultPrefillWhenMissing();
 
     if(!didInitialLandingScroll){
       didInitialLandingScroll=true;
@@ -172,6 +186,7 @@ async function refreshStatus(){
     return info;
   }
 
+  // Submitted: show summary + edit button (if allowed)
   show(confirmedCard,true);
   fillConfirmed(info.response || null);
 
@@ -198,7 +213,7 @@ document.querySelectorAll(".tabLink[data-target]").forEach(btn=>{
   });
 });
 
-/* Edit RSVP -> go to RSVP and prefill response */
+/* Edit RSVP -> go to RSVP and prefill saved response */
 editBtn?.addEventListener("click",async ()=>{
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
   if(!s.ok){ showInvalid(s.data?.error || `Error (${s.status})`); return; }
@@ -210,10 +225,14 @@ editBtn?.addEventListener("click",async ()=>{
     return;
   }
 
-  setInviteHeader(info.name);
+  setInviteHeader(info.name || "");
   clearSubmitMsg();
   resetRsvpFormToBlank();
-  applyRsvpPrefill(info.response || null);
+
+  // Prefill from saved RSVP response
+  if(info.response) applyRsvpPrefill(info.response);
+  else if(info.defaults) applyRsvpPrefill(info.defaults);
+  else ensureDefaultPrefillWhenMissing();
 
   scrollToId("rsvpScreen","smooth");
 });
@@ -260,9 +279,10 @@ rsvpForm?.addEventListener("submit",async (e)=>{
 rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
 rsvpForm?.attending?.addEventListener("change",updateAgeBlock);
 
-/* Active underline based on scroll position (screenshot behavior) */
+/* Active underline based on scroll position */
 const tabButtons=Array.from(document.querySelectorAll(".tabLink[data-target]"));
 const targetIds=Array.from(new Set(tabButtons.map(b=>b.getAttribute("data-target")).filter(Boolean)));
+const observed=targetIds.map(id=>document.getElementById(id)).filter(Boolean);
 
 function setActiveTab(id){
   for(const b of tabButtons){
@@ -270,16 +290,11 @@ function setActiveTab(id){
   }
 }
 
-const observed=targetIds
-  .map(id=>document.getElementById(id))
-  .filter(Boolean);
-
 if(observed.length){
   const obs=new IntersectionObserver((entries)=>{
     const visible=entries
       .filter(e=>e.isIntersecting)
       .sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-
     if(!visible) return;
     setActiveTab(visible.target.id);
   }, { threshold:[0.35,0.55,0.75] });
