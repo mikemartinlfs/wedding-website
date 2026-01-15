@@ -40,35 +40,32 @@ body{
   scroll-snap-type:y mandatory;
 }
 
-/* For the RSVP page we want a true top-anchored full-bleed hero */
 .section{
   min-height:100vh;
   scroll-snap-align:start;
   display:flex;
   justify-content:center;
-  padding:26px 14px;
+  padding:14px 12px;                 /* tighter */
 }
 
+/* RSVP: no outer padding so hero is flush to top corners */
 .section--rsvp{
-  padding:0;              /* remove top gap entirely */
-  display:block;          /* allow hero + content stack */
+  padding:0;
+  display:block;
 }
 
 .wrap{ width:min(920px, 100%); margin:0 auto; }
 .paper{ width:100%; }
 
-/* FULL-BLEED HERO AT TOP, EDGE-TO-EDGE */
+/* FULL-BLEED HERO AT TOP (shorter) */
 .rsvpHeroFullBleed{
   width:100vw;
-  height:clamp(220px, 32vh, 320px);
-
+  height:clamp(160px, 23vh, 230px);  /* shorter hero */
   margin-left:calc(50% - 50vw);
   margin-right:calc(50% - 50vw);
-
   background-size:cover;
   background-position:center top;
   background-repeat:no-repeat;
-
   position:relative;
 }
 
@@ -77,19 +74,19 @@ body{
   position:absolute;
   inset:0;
   background:
-    linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.18) 55%, rgba(0,0,0,.08)),
-    radial-gradient(900px 480px at 50% 15%, rgba(0,0,0,.18), rgba(0,0,0,.50));
+    linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.16) 60%, rgba(0,0,0,.06)),
+    radial-gradient(900px 420px at 50% 10%, rgba(0,0,0,.16), rgba(0,0,0,.52));
   pointer-events:none;
 }
 
-/* Title on image (smaller, fits phones) */
+/* Title on image (smaller, tighter) */
 .rsvpHeroTitleWrap{
   position:absolute;
   inset:0;
   display:flex;
   align-items:flex-start;
   justify-content:center;
-  padding:22px 14px 0 14px;
+  padding:14px 12px 0 12px;          /* tighter */
 }
 
 .heroTitle{
@@ -102,14 +99,14 @@ body{
 .heroTitle--overImage{
   color:#f7f2e2;
   text-shadow:0 10px 26px rgba(0,0,0,.45);
-  font-size:clamp(34px, 7vw, 44px);
-  line-height:1.03;
+  font-size:clamp(26px, 6.2vw, 34px); /* smaller */
+  line-height:1.00;                   /* tighter */
 }
 
-/* Card under hero */
+/* Main card under hero (less padding, pulled up less) */
 .paper--card{
-  border-radius:22px;
-  padding:18px 18px 22px 18px;
+  border-radius:18px;
+  padding:12px 12px 14px 12px;       /* tighter */
   background:var(--card);
   border:1px solid var(--cardBorder);
   box-shadow:var(--shadow);
@@ -118,9 +115,7 @@ body{
 }
 
 .paper--cardRsvp{
-  margin-top:-22px;       /* pulls the card slightly into the hero like a modern overlay */
-  border-top-left-radius:22px;
-  border-top-right-radius:22px;
+  margin-top:-14px;                   /* less overlap */
 }
 
 /* Subheader under image (smaller) */
@@ -131,65 +126,68 @@ body{
 }
 
 .heroSub--small{
-  font-size:clamp(22px, 5.4vw, 28px);
+  font-size:clamp(18px, 4.9vw, 22px);
+  line-height:1.02;
 }
 
 .meta{
   color:var(--muted);
-  font-size:14px;
+  font-size:12.5px;                   /* smaller */
   text-align:center;
-  margin:0;
+  margin:2px 0 0 0;
 }
 
-.meta--small{
-  font-size:13px;
-}
+.meta--small{ font-size:12px; }
 
-/* Divider */
+/* Divider (tighter) */
 .divider{
-  margin:14px 0 12px 0;
+  margin:10px 0 10px 0;
   height:1px;
   background:linear-gradient(90deg, rgba(0,0,0,0), rgba(122,106,58,.30), rgba(0,0,0,0));
   opacity:.9;
 }
 
-/* Cards */
+/* Inner card on RSVP (less padding) */
 .card{
-  margin-top:12px;
-  padding:16px;
-  border-radius:18px;
+  margin-top:10px;
+  padding:12px;
+  border-radius:16px;
   border:1px solid rgba(56,72,49,.14);
   background:rgba(255,255,255,.62);
 }
 
+/* Lead text tighter */
 .lead{
-  font-size:15.5px;
-  line-height:1.55;
+  font-size:14px;
+  line-height:1.42;
   color:rgba(43,52,41,.92);
   text-align:left;
-  margin:0 0 14px 0;
+  margin:0 0 10px 0;
 }
 
-.form{ margin-top:12px; }
+.form{ margin-top:8px; }
 
+/* Personalized line tighter */
 .inviteName{
   font-family:var(--fontHead);
-  font-size:24px;
-  margin:12px 0 8px 0;
+  font-size:20px;
+  line-height:1.08;
+  margin:10px 0 6px 0;
   text-align:left;
 }
 
 .inviteSub{
   margin:0 0 6px 0;
   color:var(--muted);
-  font-size:14px;
+  font-size:12.5px;
   text-align:left;
 }
 
+/* Form layout tighter */
 .grid{
   display:grid;
   grid-template-columns:1fr;
-  gap:14px;
+  gap:10px;
 }
 
 .full{ grid-column:1 / -1; }
@@ -197,50 +195,53 @@ body{
 label{
   display:flex;
   flex-direction:column;
-  gap:6px;
-  font-size:14px;
+  gap:5px;
+  font-size:13px;
   color:rgba(43,52,41,.92);
   text-align:left;
 }
 
 input,select,textarea{
   border:1px solid rgba(122,106,58,.26);
-  border-radius:14px;
-  padding:10px 12px;
+  border-radius:12px;
+  padding:9px 10px;
   font-size:14px;
   outline:none;
   background:rgba(255,255,255,.90);
   color:rgba(43,52,41,.95);
 }
 
+textarea{ resize:vertical; }
+
 input::placeholder,textarea::placeholder{ color:rgba(43,52,41,.45); }
 
 input:focus,select:focus,textarea:focus{
   border-color:rgba(122,106,58,.55);
-  box-shadow:0 0 0 4px rgba(191,167,106,.20);
+  box-shadow:0 0 0 3px rgba(191,167,106,.18);
 }
 
 .notice{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:14px;
+  margin-top:10px;
+  padding:9px 10px;
+  border-radius:12px;
   border:1px solid rgba(122,106,58,.20);
   background:rgba(255,255,255,.72);
   color:rgba(43,52,41,.92);
+  font-size:13px;
 }
 
 .btn{
   width:100%;
-  margin-top:14px;
+  margin-top:10px;
   border:0;
-  border-radius:14px;
-  padding:12px 14px;
+  border-radius:12px;
+  padding:11px 12px;
   background:var(--accent);
   color:#1f1a0c;
   font-size:14px;
   font-weight:650;
   cursor:pointer;
-  box-shadow:0 14px 28px rgba(34,24,10,.14);
+  box-shadow:0 12px 24px rgba(34,24,10,.14);
   transition:filter .12s ease, transform .06s ease;
 }
 
@@ -256,22 +257,22 @@ input:focus,select:focus,textarea:focus{
 
 em{ color:rgba(43,52,41,.82); }
 
-/* Swipe cue */
+/* Swipe cue tighter */
 .swipeCue{
-  margin-top:12px;
+  margin-top:8px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:8px;
-  opacity:.72;
+  gap:6px;
+  opacity:.70;
   user-select:none;
 }
 
-.swipeText{ font-size:13px; color:var(--muted); }
+.swipeText{ font-size:12px; color:var(--muted); }
 
 .swipeArrow{
-  width:10px;
-  height:10px;
+  width:9px;
+  height:9px;
   border-right:2px solid rgba(43,52,41,.50);
   border-bottom:2px solid rgba(43,52,41,.50);
   transform:rotate(45deg);
@@ -280,51 +281,56 @@ em{ color:rgba(43,52,41,.82); }
 
 @keyframes bob{
   0%,100%{ transform:translateY(0) rotate(45deg); }
-  50%{ transform:translateY(6px) rotate(45deg); }
+  50%{ transform:translateY(5px) rotate(45deg); }
 }
 
-/* ===== Editorial sections ===== */
-.section--editorial{ padding-top:40px; }
+/* ===== Editorial sections (other pages) ===== */
+.section--editorial{
+  padding-top:18px;                  /* tighter */
+}
 
 .siteHeader{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:10px;
-  padding-top:6px;
+  gap:6px;                           /* tighter */
+  padding-top:0;
 }
 
 .siteHeader--compact{ padding-top:0; }
 
+/* Title smaller */
 .siteTitle{
   font-family:var(--fontHead);
-  font-size:46px;
-  letter-spacing:3px;
+  font-size:34px;                    /* smaller */
+  letter-spacing:2.2px;
   font-weight:600;
   text-transform:uppercase;
   text-align:center;
+  line-height:1.0;
 }
 
 .siteMeta{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:8px;
   color:var(--muted);
-  font-size:13px;
-  letter-spacing:2px;
+  font-size:11.5px;                  /* smaller */
+  letter-spacing:1.8px;
   text-transform:uppercase;
 }
 
 .dot{ opacity:.8; }
 
+/* Tabs tighter and less vertical space */
 .tabs{
-  margin-top:10px;
+  margin-top:6px;
   display:flex;
-  gap:18px;
+  gap:14px;
   flex-wrap:wrap;
   justify-content:center;
-  border-top:1px solid rgba(122,106,58,.18);
-  padding-top:14px;
+  border-top:1px solid rgba(122,106,58,.16);
+  padding-top:10px;
 }
 
 .tabs--sticky{
@@ -333,7 +339,7 @@ em{ color:rgba(43,52,41,.82); }
   background:linear-gradient(180deg, rgba(251,247,234,.96), rgba(247,242,226,.86));
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  padding-bottom:10px;
+  padding:8px 0 8px 0;
   z-index:50;
 }
 
@@ -341,16 +347,14 @@ em{ color:rgba(43,52,41,.82); }
   appearance:none;
   background:transparent;
   border:0;
-  padding:0 0 6px 0;
+  padding:0 0 4px 0;
   margin:0;
   cursor:pointer;
-
   font-family:var(--fontBody);
-  font-size:13px;
-  letter-spacing:2px;
+  font-size:12px;                    /* smaller */
+  letter-spacing:1.6px;
   text-transform:uppercase;
   color:rgba(43,52,41,.68);
-
   border-bottom:2px solid transparent;
 }
 
@@ -361,20 +365,22 @@ em{ color:rgba(43,52,41,.82); }
   border-bottom-color:rgba(43,52,41,.70);
 }
 
+/* Page title smaller */
 .content{
-  margin-top:34px;
+  margin-top:14px;                   /* tighter */
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:18px;
+  gap:12px;
 }
 
 .sectionTitle{
   font-family:var(--fontHead);
-  font-size:32px;
-  letter-spacing:2px;
+  font-size:22px;                    /* smaller */
+  letter-spacing:1.6px;
   font-weight:500;
   margin:0;
+  line-height:1.0;
 }
 
 .bodyText{ width:min(560px, 100%); }
@@ -382,64 +388,62 @@ em{ color:rgba(43,52,41,.82); }
 .bodyP{
   margin:0;
   color:rgba(43,52,41,.78);
-  font-size:14.5px;
-  line-height:1.7;
+  font-size:14px;
+  line-height:1.55;
   text-align:left;
 }
 
-/* Home banner (edge-to-edge, no rounding, no fade) */
+/* Home banner shorter so content appears sooner */
 .fullBleedBanner{
   width:100vw;
-  height:clamp(210px, 26vh, 300px);
-
+  height:clamp(150px, 18vh, 210px);  /* shorter */
   margin-left:calc(50% - 50vw);
   margin-right:calc(50% - 50vw);
-
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-
   border-radius:0;
 }
 
-/* Confirmed card on Welcome */
+/* Confirmed card */
 .confirmed{
   width:min(560px, 100%);
-  margin-top:6px;
-  border-top:1px solid rgba(122,106,58,.22);
-  padding-top:16px;
+  margin-top:4px;
+  border-top:1px solid rgba(122,106,58,.20);
+  padding-top:12px;
 }
 
 .confirmedHeader{
   display:flex;
   flex-direction:column;
-  gap:6px;
-  margin-bottom:10px;
+  gap:4px;
+  margin-bottom:8px;
 }
 
 .confirmedTitle{
-  font-size:13px;
-  letter-spacing:2px;
+  font-size:11.5px;
+  letter-spacing:1.8px;
   text-transform:uppercase;
   color:rgba(43,52,41,.78);
 }
 
 .confirmedMeta{
   color:var(--muted);
-  font-size:13px;
+  font-size:12px;
 }
 
 .confirmedGrid{
   display:grid;
   grid-template-columns:1fr;
-  gap:8px;
+  gap:7px;
   color:rgba(43,52,41,.88);
-  font-size:14px;
+  font-size:13.5px;
 }
 
-@media (max-width:520px){
-  .siteTitle{ font-size:40px; letter-spacing:2.4px; }
-  .tabs{ gap:14px; }
-  .tabLink{ letter-spacing:1.6px; }
-  .inviteName{ font-size:23px; }
+/* Extra squeeze for small phones */
+@media (max-width:380px){
+  .rsvpHeroFullBleed{ height:clamp(145px, 22vh, 205px); }
+  .heroTitle--overImage{ font-size:clamp(24px, 6.4vw, 32px); }
+  .siteTitle{ font-size:30px; }
+  .tabs{ gap:12px; }
 }
