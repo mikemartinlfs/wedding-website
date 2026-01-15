@@ -2,23 +2,22 @@
   --fontBody: Inter, system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   --fontHead: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 
-  /* parchment */
   --bg:#f7f2e2;
   --bgTop:#fbf7ea;
 
-  /* ink */
   --ink:#2b3429;
   --muted:rgba(43,52,41,.62);
 
-  /* accent (subtle gold) */
   --accent:#bfa76a;
   --accent2:#7a6a3a;
 
-  /* card */
   --card:rgba(255,255,255,.78);
   --cardBorder:rgba(56,72,49,.18);
 
   --shadow:0 18px 46px rgba(34,24,10,.16);
+
+  /* used for the parchment fade under panoramic images */
+  --parchment:var(--bg);
 }
 
 *{ box-sizing:border-box; }
@@ -57,9 +56,7 @@ body{
   width:min(920px, 100%);
 }
 
-.paper{
-  width:100%;
-}
+.paper{ width:100%; }
 
 .paper--card{
   border-radius:22px;
@@ -306,9 +303,7 @@ em{ color:rgba(43,52,41,.82); }
   border-bottom:2px solid transparent;
 }
 
-.tabLink:hover{
-  color:rgba(43,52,41,.92);
-}
+.tabLink:hover{ color:rgba(43,52,41,.92); }
 
 .tabLink.active{
   color:rgba(43,52,41,.92);
@@ -331,23 +326,7 @@ em{ color:rgba(43,52,41,.82); }
   margin:0;
 }
 
-.heroFigure{
-  margin:0;
-  width:min(560px, 100%);
-}
-
-.heroImg{
-  width:100%;
-  display:block;
-  border-radius:0;
-  border:1px solid rgba(43,52,41,.12);
-  box-shadow:0 10px 24px rgba(34,24,10,.10);
-  filter:saturate(.82) contrast(1.02);
-}
-
-.bodyText{
-  width:min(560px, 100%);
-}
+.bodyText{ width:min(560px, 100%); }
 
 .bodyP{
   margin:0;
@@ -357,7 +336,56 @@ em{ color:rgba(43,52,41,.82); }
   text-align:left;
 }
 
-/* Confirmed card on Welcome: minimal, not a chunky tile */
+/* ===== Option 5: panoramic banner w/ parchment fade ===== */
+.bannerFigure{
+  margin:0;
+  width:100%;
+  max-width: min(860px, 100%);
+  position:relative;
+  overflow:hidden;
+
+  /* feels like a reveal, not a framed photo */
+  border-radius:10px;
+}
+
+.bannerImg{
+  display:block;
+  width:100%;
+  height:clamp(220px, 28vh, 320px);
+  object-fit:cover;
+  object-position:center;
+  border:0;
+  box-shadow:0 10px 24px rgba(34,24,10,.10);
+  filter:saturate(.92) contrast(1.02);
+}
+
+/* Soft fade into parchment at bottom so it "lands" into the page */
+.bannerFigure::after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:90px;
+  background:linear-gradient(180deg, rgba(0,0,0,0), rgba(247,242,226,.92), rgba(247,242,226,1));
+  pointer-events:none;
+}
+
+/* RSVP banner: slightly moodier / more storybook */
+.bannerFigure--shire .bannerImg{
+  height:clamp(190px, 24vh, 270px);
+  filter:saturate(.85) contrast(1.05);
+}
+
+.bannerFigure--shire::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(1000px 420px at 50% 20%, rgba(0,0,0,0), rgba(0,0,0,.14)),
+    linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,0));
+  pointer-events:none;
+}
+
+/* Confirmed card on Welcome */
 .confirmed{
   width:min(560px, 100%);
   margin-top:6px;
@@ -400,4 +428,5 @@ em{ color:rgba(43,52,41,.82); }
   .heroTitle{ font-size:40px; }
   .heroSub{ font-size:26px; }
   .inviteName{ font-size:24px; }
+  .bannerFigure{ border-radius:8px; }
 }
