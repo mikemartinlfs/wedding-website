@@ -101,4 +101,209 @@ p{ margin:0 0 12px 0; }
   border:1px solid var(--cardBorder);
   box-shadow:var(--shadowSoft);
   backdrop-filter: blur(6px);
-  -webki
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.panel-inner--wide{
+  width:min(900px, 100%);
+  padding:26px 18px;
+}
+
+.card{
+  margin-top:18px;
+  padding:16px;
+  border-radius:18px;
+  border:1px solid rgba(56,72,49,.14);
+  background:rgba(255,255,255,.62);
+}
+
+.form{ margin-top:12px; }
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+
+.full{ grid-column:1 / -1; }
+
+label{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:14px;
+  color:rgba(43,52,41,.92);
+  text-align:left;
+}
+
+input,select,textarea{
+  border:1px solid rgba(122,106,58,.26);
+  border-radius:14px;
+  padding:10px 12px;
+  font-size:14px;
+  outline:none;
+  background:rgba(255,255,255,.88);
+  color:rgba(43,52,41,.95);
+}
+
+input::placeholder,textarea::placeholder{ color:rgba(43,52,41,.45); }
+
+input:focus,select:focus,textarea:focus{
+  border-color:rgba(122,106,58,.55);
+  box-shadow:0 0 0 4px rgba(191,167,106,.20);
+}
+
+button{
+  width:100%;
+  margin-top:14px;
+  border:0;
+  border-radius:14px;
+  padding:12px 14px;
+  background:var(--accent);
+  color:#1f1a0c;
+  font-size:14px;
+  font-weight:650;
+  cursor:pointer;
+  box-shadow:0 14px 28px rgba(34,24,10,.14);
+  transition:filter .12s ease, transform .06s ease;
+}
+
+button:hover{ filter:brightness(1.02); }
+button:active{ transform:translateY(1px); }
+
+button.ghost{
+  background:transparent;
+  border:1px solid rgba(122,106,58,.34);
+  color:rgba(43,52,41,.92);
+  box-shadow:none;
+}
+
+.notice{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(122,106,58,.20);
+  background:rgba(255,255,255,.72);
+  color:rgba(43,52,41,.92);
+}
+
+em{ color:rgba(43,52,41,.82); }
+
+/* Swipe cue */
+.swipeCue{
+  margin-top:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  opacity:.72;
+  user-select:none;
+}
+
+.swipeText{ font-size:13px; color:var(--muted); }
+
+.swipeArrow{
+  width:10px;
+  height:10px;
+  border-right:2px solid rgba(43,52,41,.50);
+  border-bottom:2px solid rgba(43,52,41,.50);
+  transform:rotate(45deg);
+  animation:bob 1.25s ease-in-out infinite;
+}
+
+@keyframes bob{
+  0%,100%{ transform:translateY(0) rotate(45deg); }
+  50%{ transform:translateY(6px) rotate(45deg); }
+}
+
+/* ============ Welcome page styling (matches your reference vibe) ============ */
+.welcomeHeader{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  padding-top:4px;
+}
+
+.nameplate{
+  font-family:var(--fontHead);
+  font-size:44px;
+  letter-spacing:2.8px;
+  font-weight:600;
+  text-transform:uppercase;
+  text-align:center;
+}
+
+.welcomeMeta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.welcomeNav{
+  margin-top:8px;
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+  justify-content:center;
+  border-top:1px solid rgba(122,106,58,.18);
+  padding-top:12px;
+}
+
+.navLink{
+  width:auto;
+  margin-top:0;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+
+  font-family:var(--fontBody);
+  font-size:13px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:rgba(43,52,41,.70);
+  cursor:pointer;
+}
+
+.navLink:hover{ color:rgba(43,52,41,.92); text-decoration:underline; text-underline-offset:6px; }
+.navLink:active{ transform:none; }
+
+.welcomeBody{
+  margin-top:26px;
+}
+
+.heroFigure{
+  margin:16px auto 0 auto;
+  width:min(520px, 100%);
+}
+
+.heroImg{
+  width:100%;
+  display:block;
+  border-radius:0;
+  border:1px solid rgba(43,52,41,.12);
+  box-shadow:0 10px 24px rgba(34,24,10,.10);
+  filter:saturate(.85) contrast(1.02);
+}
+
+.welcomeText{
+  margin-top:16px;
+  width:min(520px, 100%);
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* Mobile tweaks */
+@media (max-width:520px){
+  h1{ font-size:40px; }
+  h2{ font-size:26px; }
+  .pageTitle{ font-size:36px; }
+  .nameplate{ font-size:38px; letter-spacing:2.2px; }
+  .welcomeNav{ gap:14px; }
+  .navLink{ letter-spacing:1.6px;
