@@ -1,8 +1,6 @@
 const qs=new URLSearchParams(location.search);
 const token=(qs.get("t") || "").trim();
 
-const scroller=document.getElementById("scroller");
-
 const invalidScreen=document.getElementById("invalidScreen");
 const invalidToken=document.getElementById("invalidToken");
 
@@ -31,7 +29,8 @@ let didInitialLandingScroll=false;
 
 function show(el,on){ el?.classList.toggle("hidden",!on); }
 
-function scrollToSection(el,behavior="smooth"){
+function scrollToId(id,behavior="smooth"){
+  const el=document.getElementById(id);
   if(!el) return;
   el.scrollIntoView({ behavior, block:"start" });
 }
@@ -54,7 +53,7 @@ async function apiPost(url,body){
   catch{ return { ok:r.ok,status:r.status,data:{ raw:txt } }; }
 }
 
-function setHeader(name){
+function setInviteHeader(name){
   if(inviteNameEl) inviteNameEl.textContent=name ? `${name}, will you join us in this new chapter?` : "Will you join us in this new chapter?";
   if(inviteSubEl) inviteSubEl.textContent="";
 }
@@ -65,31 +64,48 @@ function clearSubmitMsg(){
   submitMsg.classList.add("hidden");
 }
 
-function setFormValues(resp){
-  if(!rsvpForm || !resp) return;
-  const att=String(resp.attending || "").trim().toLowerCase();
-  if(att) rsvpForm.attending.value=att;
-  if(resp.guest_count!=null) rsvpForm.guest_count.value=resp.guest_count;
-  if(resp.guest_ages!=null) rsvpForm.guest_ages.value=resp.guest_ages;
-  if(resp.notes!=null) rsvpForm.notes.value=resp.notes;
-}
-
-function fillConfirmed(resp){
-  if(!resp) return;
-  const att=String(resp.attending || "").trim().toLowerCase();
-  if(c_attending) c_attending.textContent=att==="no" ? "No" : "Yes";
-  if(c_guest_count) c_guest_count.textContent=resp.guest_count ?? "";
-  if(c_guest_ages) c_guest_ages.textContent=resp.guest_ages ?? "";
-  if(c_notes) c_notes.textContent=resp.notes ?? "";
+function resetRsvpFormToBlank(){
+  if(!rsvpForm) return;
+  rsvpForm.attending.value="";
+  rsvpForm.guest_count.value="";
+  if(rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
+  rsvpForm.notes.value="";
 }
 
 function updateAgeBlock(){
   if(!ageBlock || !rsvpForm) return;
+
   const gc=parseInt(String(rsvpForm.guest_count?.value || "0"),10);
   const guestCount=Number.isNaN(gc) ? 0 : gc;
+
   const shouldShow=HAS_CHILDREN && guestCount > 1;
   ageBlock.classList.toggle("hidden",!shouldShow);
+
   if(!shouldShow && rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
+}
+
+function applyRsvpPrefill(resp){
+  if(!rsvpForm) return;
+
+  const attending=String(resp?.attending || "").trim().toLowerCase();
+  const guest_count=resp?.guest_count ?? "";
+  const guest_ages=resp?.guest_ages ?? "";
+  const notes=resp?.notes ?? "";
+
+  rsvpForm.attending.value=attending;
+  rsvpForm.guest_count.value=String(guest_count);
+  if(rsvpForm.guest_ages) rsvpForm.guest_ages.value=String(guest_ages);
+  rsvpForm.notes.value=String(notes);
+
+  updateAgeBlock();
+}
+
+function fillConfirmed(resp){
+  const att=String(resp?.attending || "").trim().toLowerCase();
+  if(c_attending) c_attending.textContent=att==="no" ? "No" : "Yes";
+  if(c_guest_count) c_guest_count.textContent=resp?.guest_count ?? "";
+  if(c_guest_ages) c_guest_ages.textContent=resp?.guest_ages ?? "";
+  if(c_notes) c_notes.textContent=resp?.notes ?? "";
 }
 
 function showInvalid(msg){
@@ -137,19 +153,20 @@ async function refreshStatus(){
   showValidScreens();
 
   HAS_CHILDREN=!!info.has_children;
-  setHeader(info.name);
+
+  setInviteHeader(info.name);
 
   if(!info.submitted){
     show(confirmedCard,false);
     show(editBtn,false);
 
-    if(info.defaults) setFormValues(info.defaults);
-    updateAgeBlock();
     clearSubmitMsg();
+    resetRsvpFormToBlank();
+    if(info.defaults) applyRsvpPrefill(info.defaults);
 
     if(!didInitialLandingScroll){
       didInitialLandingScroll=true;
-      scrollToSection(rsvpScreen,"auto");
+      scrollToId("rsvpScreen","auto");
     }
 
     return info;
@@ -167,29 +184,21 @@ async function refreshStatus(){
 
   if(!didInitialLandingScroll){
     didInitialLandingScroll=true;
-    scrollToSection(homeScreen,"auto");
+    scrollToId("homeScreen","auto");
   }
 
   return info;
 }
 
-/* Welcome nav links -> scroll */
-document.querySelectorAll(".navLink[data-target]").forEach(btn=>{
+/* Tabs click -> scroll */
+document.querySelectorAll(".tabLink[data-target]").forEach(btn=>{
   btn.addEventListener("click",()=>{
     const id=btn.getAttribute("data-target");
-    const el=document.getElementById(id);
-    scrollToSection(el,"smooth");
+    scrollToId(id,"smooth");
   });
 });
 
-/* Back buttons */
-document.querySelectorAll(".backToWelcome").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    scrollToSection(homeScreen,"smooth");
-  });
-});
-
-/* Edit RSVP from Welcome -> scroll up + prefill */
+/* Edit RSVP -> go to RSVP and prefill response */
 editBtn?.addEventListener("click",async ()=>{
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
   if(!s.ok){ showInvalid(s.data?.error || `Error (${s.status})`); return; }
@@ -201,18 +210,26 @@ editBtn?.addEventListener("click",async ()=>{
     return;
   }
 
-  setHeader(info.name);
-  if(info.response) setFormValues(info.response);
-  updateAgeBlock();
+  setInviteHeader(info.name);
   clearSubmitMsg();
+  resetRsvpFormToBlank();
+  applyRsvpPrefill(info.response || null);
 
-  scrollToSection(rsvpScreen,"smooth");
+  scrollToId("rsvpScreen","smooth");
 });
 
 /* Submit RSVP -> save -> refresh -> land on Welcome */
 rsvpForm?.addEventListener("submit",async (e)=>{
   e.preventDefault();
   clearSubmitMsg();
+
+  if(!token){
+    if(submitMsg){
+      submitMsg.textContent="Missing invite token.";
+      submitMsg.classList.remove("hidden");
+    }
+    return;
+  }
 
   const payload={
     token,
@@ -237,11 +254,38 @@ rsvpForm?.addEventListener("submit",async (e)=>{
   }
 
   await refreshStatus();
-  scrollToSection(homeScreen,"smooth");
+  scrollToId("homeScreen","smooth");
 });
 
 rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
 rsvpForm?.attending?.addEventListener("change",updateAgeBlock);
+
+/* Active underline based on scroll position (screenshot behavior) */
+const tabButtons=Array.from(document.querySelectorAll(".tabLink[data-target]"));
+const targetIds=Array.from(new Set(tabButtons.map(b=>b.getAttribute("data-target")).filter(Boolean)));
+
+function setActiveTab(id){
+  for(const b of tabButtons){
+    b.classList.toggle("active", b.getAttribute("data-target")===id);
+  }
+}
+
+const observed=targetIds
+  .map(id=>document.getElementById(id))
+  .filter(Boolean);
+
+if(observed.length){
+  const obs=new IntersectionObserver((entries)=>{
+    const visible=entries
+      .filter(e=>e.isIntersecting)
+      .sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+
+    if(!visible) return;
+    setActiveTab(visible.target.id);
+  }, { threshold:[0.35,0.55,0.75] });
+
+  observed.forEach(el=>obs.observe(el));
+}
 
 updateCountdown();
 refreshStatus();
