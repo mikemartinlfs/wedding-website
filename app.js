@@ -21,7 +21,7 @@ const c_guest_ages=document.getElementById("c_guest_ages");
 const c_notes=document.getElementById("c_notes");
 const editBtn=document.getElementById("editBtn");
 
-const jumpToHomeBtn=document.getElementById("jumpToHomeBtn");
+const jumpToDetailsBtn=document.getElementById("jumpToDetailsBtn");
 
 let HAS_CHILDREN=false;
 
@@ -35,6 +35,11 @@ const allScreens=[invalidScreen, rsvpScreen, homeScreen,
 function showScreen(el){
   allScreens.forEach(s=>s.classList.add("hidden"));
   el?.classList.remove("hidden");
+}
+
+function openPage(pageId){
+  const el=document.getElementById(pageId);
+  if(el) showScreen(el);
 }
 
 async function apiGet(url){
@@ -118,7 +123,7 @@ function openHome(name,resp,canEdit){
 
 async function refreshStatus(){
   if(!token){
-    showInvalid("This invitation link is missing or invalid.");
+    showInvalid("This invitation link is missing or invalid; please use the original link sent to access our wedding website.");
     return;
   }
 
@@ -140,12 +145,40 @@ async function refreshStatus(){
   }
 }
 
-editBtn?.addEventListener("click",async ()=>{
-  const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
-  if(!s.ok){ showInvalid(s.data?.error); return; }
-  openRsvp(s.data.name,s.data.response);
+/* RSVP screen -> "scroll down" CTA actually goes to Details */
+jumpToDetailsBtn?.addEventListener("click",()=>{
+  openPage("details");
 });
 
+/* Tile navigation from Home */
+document.querySelectorAll(".tile[data-page]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    openPage(btn.getAttribute("data-page"));
+  });
+});
+
+/* Back to Home buttons */
+document.querySelectorAll(".backHome").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    showScreen(homeScreen);
+  });
+});
+
+/* Edit RSVP */
+editBtn?.addEventListener("click",async ()=>{
+  const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
+  if(!s.ok){ showInvalid(s.data?.error || `Error (${s.status})`); return; }
+  const info=s.data;
+
+  if(!info.can_edit){
+    openHome(info.name,info.response,false);
+    return;
+  }
+
+  openRsvp(info.name,info.response);
+});
+
+/* Submit RSVP */
 rsvpForm?.addEventListener("submit",async (e)=>{
   e.preventDefault();
   clearSubmitMsg();
@@ -160,14 +193,19 @@ rsvpForm?.addEventListener("submit",async (e)=>{
 
   const r=await apiPost("/api/submit",payload);
   if(!r.ok){
-    submitMsg.textContent=r.data?.error || "Submit failed.";
-    submitMsg.classList.remove("hidden");
+    if(submitMsg){
+      submitMsg.textContent=r.data?.error || `Submit failed (${r.status})`;
+      submitMsg.classList.remove("hidden");
+    }
     return;
   }
 
-  submitMsg.textContent="RSVP saved.";
-  submitMsg.classList.remove("hidden");
-  refreshStatus();
+  if(submitMsg){
+    submitMsg.textContent="RSVP saved.";
+    submitMsg.classList.remove("hidden");
+  }
+
+  await refreshStatus();
 });
 
 rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
