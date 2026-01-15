@@ -118,4 +118,128 @@
         <div class="content">
           <h1 class="sectionTitle">WELCOME</h1>
 
-          <!-- FULL-BLEED BANNER (no rounding, no fade
+          <!-- FULL-BLEED BANNER (no rounding, no fade, edge-to-edge) -->
+          <div class="fullBleedBanner" style="background-image:url('assets/details.jpg');" aria-label="Our wedding venue"></div>
+
+          <div class="bodyText">
+            <p class="bodyP">
+              Everything you’ll need is below. Use the tabs above to jump to a section, or keep scrolling.
+            </p>
+          </div>
+
+          <div id="confirmedCard" class="confirmed hidden">
+            <div class="confirmedHeader">
+              <div class="confirmedTitle">RSVP RECEIVED</div>
+              <div class="confirmedMeta" id="confirmedMeta"></div>
+            </div>
+
+            <div class="confirmedGrid">
+              <div><strong>Attending:</strong> <span id="c_attending"></span></div>
+              <div><strong>Guest count:</strong> <span id="c_guest_count"></span></div>
+              <div><strong>Ages:</strong> <span id="c_guest_ages"></span></div>
+              <div><strong>Notes:</strong> <span id="c_notes"></span></div>
+            </div>
+
+            <button id="editBtn" class="btn btn--ghost hidden" type="button">Edit RSVP</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DETAILS -->
+    <section id="details" class="section section--editorial" data-nav="Details">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink active" type="button" data-target="details">Details</button>
+            <button class="tabLink" type="button" data-target="travel">Travel</button>
+            <button class="tabLink" type="button" data-target="dress">Dress</button>
+            <button class="tabLink" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">DETAILS</h1>
+          <div class="bodyText">
+            <p class="bodyP">Ceremony time, reception time, venue address, etc.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRAVEL -->
+    <section id="travel" class="section section--editorial" data-nav="Travel">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink" type="button" data-target="details">Details</button>
+            <button class="tabLink active" type="button" data-target="travel">Travel</button>
+            <button class="tabLink" type="button" data-target="dress">Dress</button>
+            <button class="tabLink" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">TRAVEL</h1>
+          <div class="bodyText">
+            <p class="bodyP">Hotel block, airports, parking, shuttle info.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRESS -->
+    <section id="dress" class="section section--editorial" data-nav="Dress">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink" type="button" data-target="details">Details</button>
+            <button class="tabLink" type="button" data-target="travel">Travel</button>
+            <button class="tabLink active" type="button" data-target="dress">Dress</button>
+            <button class="tabLink" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">DRESS CODE</h1>
+          <div class="bodyText">
+            <p class="bodyP">Short guidance + any cultural notes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGISTRY -->
+    <section id="registry" class="section section--editorial" data-nav="Registry">
+      <div class="wrap">
+        <header class="siteHeader siteHeader--compact">
+          <nav class="tabs tabs--sticky" aria-label="Wedding site navigation">
+            <button class="tabLink" type="button" data-target="homeScreen">Home</button>
+            <button class="tabLink" type="button" data-target="details">Details</button>
+            <button class="tabLink" type="button" data-target="travel">Travel</button>
+            <button class="tabLink" type="button" data-target="dress">Dress</button>
+            <button class="tabLink active" type="button" data-target="registry">Registry</button>
+            <button class="tabLink" type="button" data-target="rsvpScreen">RSVP</button>
+          </nav>
+        </header>
+
+        <div class="content">
+          <h1 class="sectionTitle">REGISTRY</h1>
+          <div class="bodyText">
+            <p class="bodyP">Registry links (later).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
