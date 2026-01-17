@@ -147,7 +147,7 @@ body{
 }
 
 .meta{ color:rgba(31,43,34,.70); font-size:12px; margin:3px 0 0; }
-.meta--small{ font-size:11.5px; letter-spacing:.04em; }
+.meta--small{ font-size:11.5px; letter-spacing:.04em; text-align:center;}
 
 .lead{
   margin:0 0 6px 0;
