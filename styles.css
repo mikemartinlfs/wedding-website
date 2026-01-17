@@ -45,10 +45,9 @@ body{
   scroll-snap-align:start;
   display:flex;
   justify-content:center;
-  padding:14px 12px;                 /* tighter */
+  padding:14px 12px;
 }
 
-/* RSVP: no outer padding so hero is flush to top corners */
 .section--rsvp{
   padding:0;
   display:block;
@@ -57,10 +56,9 @@ body{
 .wrap{ width:min(920px, 100%); margin:0 auto; }
 .paper{ width:100%; }
 
-/* FULL-BLEED HERO AT TOP (shorter) */
 .rsvpHeroFullBleed{
   width:100vw;
-  height:clamp(160px, 23vh, 230px);  /* shorter hero */
+  height:clamp(155px, 22vh, 220px);
   margin-left:calc(50% - 50vw);
   margin-right:calc(50% - 50vw);
   background-size:cover;
@@ -74,19 +72,18 @@ body{
   position:absolute;
   inset:0;
   background:
-    linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.16) 60%, rgba(0,0,0,.06)),
+    linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.18) 60%, rgba(0,0,0,.06)),
     radial-gradient(900px 420px at 50% 10%, rgba(0,0,0,.16), rgba(0,0,0,.52));
   pointer-events:none;
 }
 
-/* Title on image (smaller, tighter) */
 .rsvpHeroTitleWrap{
   position:absolute;
   inset:0;
   display:flex;
   align-items:flex-start;
   justify-content:center;
-  padding:14px 12px 0 12px;          /* tighter */
+  padding:14px 12px 0 12px;
 }
 
 .heroTitle{
@@ -99,14 +96,14 @@ body{
 .heroTitle--overImage{
   color:#f7f2e2;
   text-shadow:0 10px 26px rgba(0,0,0,.45);
-  font-size:clamp(26px, 6.2vw, 34px); /* smaller */
-  line-height:1.00;                   /* tighter */
+  font-size:clamp(26px, 6.2vw, 34px);
+  line-height:1.00;
+  font-weight:700;
 }
 
-/* Main card under hero (less padding, pulled up less) */
 .paper--card{
   border-radius:18px;
-  padding:12px 12px 14px 12px;       /* tighter */
+  padding:12px 12px 14px 12px;
   background:var(--card);
   border:1px solid var(--cardBorder);
   box-shadow:var(--shadow);
@@ -115,10 +112,9 @@ body{
 }
 
 .paper--cardRsvp{
-  margin-top:-14px;                   /* less overlap */
+  margin-top:-14px;
 }
 
-/* Subheader under image (smaller) */
 .heroSub{
   font-family:var(--fontHead);
   margin:0;
@@ -128,18 +124,20 @@ body{
 .heroSub--small{
   font-size:clamp(18px, 4.9vw, 22px);
   line-height:1.02;
+  font-weight:600;
 }
 
 .meta{
   color:var(--muted);
-  font-size:12.5px;                   /* smaller */
+  font-size:12.5px;
+}
+
+.meta--small{
+  font-size:12px;
   text-align:center;
   margin:2px 0 0 0;
 }
 
-.meta--small{ font-size:12px; }
-
-/* Divider (tighter) */
 .divider{
   margin:10px 0 10px 0;
   height:1px;
@@ -147,7 +145,6 @@ body{
   opacity:.9;
 }
 
-/* Inner card on RSVP (less padding) */
 .card{
   margin-top:10px;
   padding:12px;
@@ -156,7 +153,6 @@ body{
   background:rgba(255,255,255,.62);
 }
 
-/* Lead text tighter */
 .lead{
   font-size:14px;
   line-height:1.42;
@@ -167,23 +163,6 @@ body{
 
 .form{ margin-top:8px; }
 
-/* Personalized line tighter */
-.inviteName{
-  font-family:var(--fontHead);
-  font-size:20px;
-  line-height:1.08;
-  margin:10px 0 6px 0;
-  text-align:left;
-}
-
-.inviteSub{
-  margin:0 0 6px 0;
-  color:var(--muted);
-  font-size:12.5px;
-  text-align:left;
-}
-
-/* Form layout tighter */
 .grid{
   display:grid;
   grid-template-columns:1fr;
@@ -201,7 +180,7 @@ label{
   text-align:left;
 }
 
-input,select,textarea{
+input,textarea{
   border:1px solid rgba(122,106,58,.26);
   border-radius:12px;
   padding:9px 10px;
@@ -213,9 +192,11 @@ input,select,textarea{
 
 textarea{ resize:vertical; }
 
-input::placeholder,textarea::placeholder{ color:rgba(43,52,41,.45); }
+input::placeholder,textarea::placeholder{
+  color:rgba(43,52,41,.45);
+}
 
-input:focus,select:focus,textarea:focus{
+input:focus,textarea:focus{
   border-color:rgba(122,106,58,.55);
   box-shadow:0 0 0 3px rgba(191,167,106,.18);
 }
@@ -257,7 +238,64 @@ input:focus,select:focus,textarea:focus{
 
 em{ color:rgba(43,52,41,.82); }
 
-/* Swipe cue tighter */
+.inviteName{
+  font-family:var(--fontHead);
+  font-size:20px;
+  line-height:1.08;
+  margin:10px 0 6px 0;
+  text-align:left;
+}
+
+.inviteSub{
+  margin:0 0 6px 0;
+  color:var(--muted);
+  font-size:12.5px;
+  text-align:left;
+}
+
+/* RSVP: inline rows (Attending? ○ Yes ○ No) + guest_count */
+.inline-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.inline-row-label{
+  font-size:13px;
+  color:rgba(43,52,41,.92);
+  white-space:nowrap;
+}
+
+.inline-row-control{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-left:auto;
+  flex-wrap:nowrap;
+}
+
+.radio-inline{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
+  color:rgba(43,52,41,.92);
+  white-space:nowrap;
+}
+
+.radio-inline input{
+  margin:0;
+  width:16px;
+  height:16px;
+}
+
+.inline-input{
+  width:120px;
+  max-width:40vw;
+  margin-left:auto;
+}
+
 .swipeCue{
   margin-top:8px;
   display:flex;
@@ -284,25 +322,25 @@ em{ color:rgba(43,52,41,.82); }
   50%{ transform:translateY(5px) rotate(45deg); }
 }
 
-/* ===== Editorial sections (other pages) ===== */
+/* Editorial sections */
 .section--editorial{
-  padding-top:18px;                  /* tighter */
+  padding-top:18px;
 }
 
 .siteHeader{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:6px;                           /* tighter */
+  gap:6px;
+}
+
+.siteHeader--compact{
   padding-top:0;
 }
 
-.siteHeader--compact{ padding-top:0; }
-
-/* Title smaller */
 .siteTitle{
   font-family:var(--fontHead);
-  font-size:34px;                    /* smaller */
+  font-size:34px;
   letter-spacing:2.2px;
   font-weight:600;
   text-transform:uppercase;
@@ -315,14 +353,13 @@ em{ color:rgba(43,52,41,.82); }
   align-items:center;
   gap:8px;
   color:var(--muted);
-  font-size:11.5px;                  /* smaller */
+  font-size:11.5px;
   letter-spacing:1.8px;
   text-transform:uppercase;
 }
 
 .dot{ opacity:.8; }
 
-/* Tabs tighter and less vertical space */
 .tabs{
   margin-top:6px;
   display:flex;
@@ -351,7 +388,7 @@ em{ color:rgba(43,52,41,.82); }
   margin:0;
   cursor:pointer;
   font-family:var(--fontBody);
-  font-size:12px;                    /* smaller */
+  font-size:12px;
   letter-spacing:1.6px;
   text-transform:uppercase;
   color:rgba(43,52,41,.68);
@@ -365,9 +402,8 @@ em{ color:rgba(43,52,41,.82); }
   border-bottom-color:rgba(43,52,41,.70);
 }
 
-/* Page title smaller */
 .content{
-  margin-top:14px;                   /* tighter */
+  margin-top:14px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -376,11 +412,12 @@ em{ color:rgba(43,52,41,.82); }
 
 .sectionTitle{
   font-family:var(--fontHead);
-  font-size:22px;                    /* smaller */
+  font-size:22px;
   letter-spacing:1.6px;
-  font-weight:500;
+  font-weight:600;
   margin:0;
   line-height:1.0;
+  text-align:center;
 }
 
 .bodyText{ width:min(560px, 100%); }
@@ -393,10 +430,9 @@ em{ color:rgba(43,52,41,.82); }
   text-align:left;
 }
 
-/* Home banner shorter so content appears sooner */
 .fullBleedBanner{
   width:100vw;
-  height:clamp(150px, 18vh, 210px);  /* shorter */
+  height:clamp(145px, 18vh, 205px);
   margin-left:calc(50% - 50vw);
   margin-right:calc(50% - 50vw);
   background-size:cover;
@@ -405,7 +441,6 @@ em{ color:rgba(43,52,41,.82); }
   border-radius:0;
 }
 
-/* Confirmed card */
 .confirmed{
   width:min(560px, 100%);
   margin-top:4px;
@@ -440,11 +475,15 @@ em{ color:rgba(43,52,41,.82); }
   font-size:13.5px;
 }
 
-/* Extra squeeze for small phones */
 @media (max-width:380px){
   .rsvpHeroFullBleed{ height:clamp(145px, 22vh, 205px); }
   .heroTitle--overImage{ font-size:clamp(24px, 6.4vw, 32px); }
   .siteTitle{ font-size:30px; }
   .tabs{ gap:12px; }
+  .inline-input{ width:110px; }
 }
 
+@media (max-width:340px){
+  .inline-row{ flex-wrap:wrap; }
+  .inline-row-control{ width:100%; justify-content:flex-start; }
+}
