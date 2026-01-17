@@ -49,14 +49,33 @@
               <p id="inviteSub" class="inviteSub"></p>
 
               <div class="grid">
-                <label>
-                  Attending?
-                  <select name="attending" required>
-                    <option value="" disabled>Select</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </label>
+                <div class="inline-field full">
+                  <div class="inline-label">
+                    <span class="label-title">Attending?</span>
+                    <span class="label-sub">Select one</span>
+                  </div>
+                
+                  <div class="segmented" role="radiogroup" aria-label="Attending">
+                    <label class="seg">
+                      <input type="radio" name="attending" value="yes" required />
+                      <span>Yes</span>
+                    </label>
+                
+                    <label class="seg">
+                      <input type="radio" name="attending" value="no" required />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="inline-field full">
+                  <div class="inline-label">
+                    <span class="label-title">Number attending</span>
+                  </div>
+                
+                  <input class="inline-input" name="guest_count" type="number" min="0" max="10" required />
+                </div>
+
 
                 <label>
                   Number attending
