@@ -442,7 +442,7 @@ textarea{
   .siteTitle{ font-size:30px; }
   .sectionTitle{ font-size:26px; }
   .inline-row-label{ flex-basis:112px; }
-  .heroTitle--overImage{ font-size:26px; }
+  .heroTitle--overImage{ font-size:36px; }
   .rsvpHeroFullBleed{ height:25vh; min-height:145px; }
   .fullBleedBanner{ height:190px; }
   .fullBleedBanner--map{ height:215px; }
@@ -452,7 +452,7 @@ textarea{
   /* Short phones: squeeze RSVP further so it stays one screen */
   .rsvpHeroFullBleed{ height:22vh; min-height:132px; }
   .paper--cardRsvp{ padding:9px 11px; }
-  .heroTitle--overImage{ font-size:24px; }
+  .heroTitle--overImage{ font-size:36px; }
   .heroSub--small{ font-size:17px; }
   .inviteName{ font-size:15.5px; }
   .lead{ font-size:12px; }
