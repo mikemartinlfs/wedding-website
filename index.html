@@ -35,7 +35,6 @@
 
     <!-- RSVP (landing if not submitted) -->
     <section id="rsvpScreen" class="section section--rsvp hidden">
-      <!-- Full-bleed hero aligned to top corners -->
       <div class="rsvpHeroFullBleed" style="background-image:url('assets/hero.jpg');">
         <div class="rsvpHeroTitleWrap">
           <h1 class="heroTitle heroTitle--overImage">One Invitation to Gather Them All</h1>
@@ -58,7 +57,6 @@
 
               <div class="grid">
 
-                <!-- Attending inline: Attending?  ○ Yes  ○ No -->
                 <div class="inline-row full">
                   <div class="inline-row-label">Attending?</div>
                   <div class="inline-row-control">
@@ -73,14 +71,22 @@
                   </div>
                 </div>
 
-                <!-- Guest count inline -->
                 <div class="inline-row full">
                   <div class="inline-row-label">Number attending</div>
                   <input class="inline-input" name="guest_count" type="number" min="0" max="10" required />
                 </div>
 
                 <div id="ageBlock" class="full hidden">
-                  <p class="meta" style="margin:0 0 6px 0;">There will be a supervised kids’ area at the reception so kids and adults alike can enjoy the festivities.</p>
+                  <p class="meta" style="margin:0 0 6px 0;">There will be a supervised kids’ area at the reception.</p>
+                  <p class="meta" style="margin:0 0 10px 0;">
+                    To prepare properly for our smallest adventurers, please list your children’s ages separated by commas.
+                    (This information is required by the company managing the area.)
+                  </p>
+
+                  <label class="full" style="margin:0;">
+                    Children’s ages (comma-separated)
+                    <input name="guest_ages" placeholder="6, 4, 2" />
+                  </label>
                 </div>
 
                 <label class="full">
@@ -127,7 +133,6 @@
         <div class="content">
           <h2 class="sectionTitle">WELCOME</h2>
 
-          <!-- Full-width venue banner, no fade, no rounded corners -->
           <div class="fullBleedBanner" style="background-image:url('assets/details.jpg');"></div>
 
           <div class="bodyText">
@@ -170,9 +175,16 @@
       <div class="wrap">
         <div class="content">
           <h2 class="sectionTitle">TRAVEL</h2>
-          <div class="card">
-            <p class="bodyP">Hotel block, airports, parking, shuttle info.</p>
+
+          <!-- Canted folded-map prop above/right of the info -->
+          <div class="travelLayout">
+            <div class="mapProp" aria-hidden="true"></div>
+
+            <div class="card travelCard">
+              <p class="bodyP">Hotel block, airports, parking, shuttle info.</p>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
