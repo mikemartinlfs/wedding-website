@@ -134,31 +134,33 @@ body{
   padding:12px 14px;
 }
 
+/* RSVP card spacing tightened */
 .paper--cardRsvp{
-  margin-top:10px;
+  margin-top:8px;
+  padding:10px 12px;
 }
 
 .divider{
   height:1px;
   background:linear-gradient(90deg, rgba(31,43,34,0), rgba(31,43,34,.18), rgba(31,43,34,0));
-  margin:10px 0 10px;
+  margin:8px 0 8px;
 }
 
-.meta{ color:rgba(31,43,34,.70); font-size:12px; margin:4px 0 0; }
-.meta--small{ font-size:12px; letter-spacing:.04em; }
+.meta{ color:rgba(31,43,34,.70); font-size:12px; margin:3px 0 0; }
+.meta--small{ font-size:11.5px; letter-spacing:.04em; }
 
 .lead{
-  margin:0 0 8px 0;
+  margin:0 0 6px 0;
   color:rgba(31,43,34,.78);
-  line-height:1.4;
-  font-size:13px;
+  line-height:1.35;
+  font-size:12.5px;
 }
 
 .card{
   background:rgba(255,255,255,.55);
   border:1px solid rgba(31,43,34,.14);
   border-radius:16px;
-  padding:10px;
+  padding:9px;
 }
 
 .cardTitle{
@@ -220,19 +222,20 @@ body{
 .list li{ margin:5px 0; }
 
 .notice{
-  margin-top:10px;
-  padding:10px 12px;
+  margin-top:8px;
+  padding:9px 10px;
   border-radius:14px;
   border:1px solid rgba(31,43,34,.14);
   background:rgba(255,255,255,.60);
   color:rgba(31,43,34,.80);
+  font-size:12.5px;
 }
 
 /* RSVP specific layout to fit one screen */
 .rsvpHeroFullBleed{
   width:100vw;
-  height:34vh;
-  min-height:210px;
+  height:26vh;        /* was 34vh */
+  min-height:150px;   /* was 210px */
   background-size:cover;
   background-position:center;
   position:relative;
@@ -244,8 +247,8 @@ body{
   display:flex;
   align-items:flex-start;
   justify-content:center;
-  padding:14px 12px;
-  background:linear-gradient(180deg, rgba(0,0,0,.34), rgba(0,0,0,0) 60%);
+  padding:10px 10px;
+  background:linear-gradient(180deg, rgba(0,0,0,.34), rgba(0,0,0,0) 62%);
 }
 .heroTitle{
   font-family:var(--fontHead);
@@ -256,7 +259,7 @@ body{
 .heroTitle--overImage{
   color:rgba(255,255,255,.94);
   text-shadow:0 10px 28px rgba(0,0,0,.42);
-  font-size:32px;
+  font-size:28px;     /* slightly smaller */
   line-height:1.02;
 }
 
@@ -266,26 +269,26 @@ body{
   color:var(--green2);
   text-align:center;
 }
-.heroSub--small{ font-size:20px; }
+.heroSub--small{ font-size:18px; } /* was 20px */
 
 .inviteName{
-  margin:2px 0 3px;
+  margin:1px 0 2px;
   font-family:var(--fontHead);
-  font-size:18px;
+  font-size:16.5px;
   color:var(--green2);
 }
 .inviteSub{
-  margin:0 0 6px;
+  margin:0 0 5px;
   color:rgba(31,43,34,.70);
-  font-size:12px;
+  font-size:11.5px;
 }
 
-.form{ margin-top:8px; }
+.form{ margin-top:6px; }
 
 .grid{
   display:grid;
   grid-template-columns:1fr;
-  gap:8px;
+  gap:7px; /* tighter */
 }
 .full{ grid-column:1 / -1; }
 
@@ -295,9 +298,9 @@ body{
   gap:10px;
 }
 .inline-row-label{
-  flex:0 0 120px;
+  flex:0 0 118px;
   color:rgba(31,43,34,.82);
-  font-size:13px;
+  font-size:12.5px;
   font-weight:650;
 }
 .inline-row-control{
@@ -311,7 +314,7 @@ body{
   align-items:center;
   gap:7px;
   color:rgba(31,43,34,.78);
-  font-size:13px;
+  font-size:12.5px;
   white-space:nowrap;
 }
 .radio-inline input{ transform: translateY(1px); }
@@ -320,8 +323,8 @@ body{
   flex:1;
   border:1px solid rgba(31,43,34,.18);
   border-radius:14px;
-  padding:9px 12px;
-  font-size:13px;
+  padding:8px 10px; /* tighter */
+  font-size:12.5px;
   background:rgba(255,255,255,.66);
   color:rgba(31,43,34,.84);
   outline:none;
@@ -331,28 +334,30 @@ label{
   display:flex;
   flex-direction:column;
   gap:5px;
-  font-size:13px;
+  font-size:12.5px;
   color:rgba(31,43,34,.80);
 }
 textarea{
   border:1px solid rgba(31,43,34,.18);
   border-radius:14px;
-  padding:9px 12px;
-  font-size:13px;
+  padding:8px 10px;
+  font-size:12.5px;
   background:rgba(255,255,255,.66);
   color:rgba(31,43,34,.84);
   outline:none;
   resize:none;
+  line-height:1.3;
+  min-height:56px; /* keeps it from ballooning */
 }
 
 .btn{
-  margin-top:10px;
+  margin-top:8px;
   border:0;
   border-radius:14px;
-  padding:11px 14px;
+  padding:10px 14px; /* slightly tighter */
   background:var(--green2);
   color:rgba(255,255,255,.94);
-  font-size:13px;
+  font-size:12.5px;
   font-weight:700;
   cursor:pointer;
   box-shadow:0 10px 22px rgba(0,0,0,.16);
@@ -368,13 +373,13 @@ textarea{
 
 /* Swipe cue */
 .swipeCue{
-  margin-top:10px;
+  margin-top:8px;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
   color:rgba(31,43,34,.60);
-  font-size:12px;
+  font-size:11.5px;
   letter-spacing:.08em;
 }
 .swipeArrow{
@@ -395,7 +400,7 @@ textarea{
   box-shadow: var(--shadow);
 }
 
-/* Travel map banner: slightly taller and centered like a map */
+/* Travel map banner */
 .fullBleedBanner--map{
   height:230px;
   background-position:center;
@@ -437,7 +442,19 @@ textarea{
   .siteTitle{ font-size:30px; }
   .sectionTitle{ font-size:26px; }
   .inline-row-label{ flex-basis:112px; }
-  .heroTitle--overImage{ font-size:30px; }
+  .heroTitle--overImage{ font-size:26px; }
+  .rsvpHeroFullBleed{ height:25vh; min-height:145px; }
   .fullBleedBanner{ height:190px; }
   .fullBleedBanner--map{ height:215px; }
+}
+
+@media (max-height:700px){
+  /* Short phones: squeeze RSVP further so it stays one screen */
+  .rsvpHeroFullBleed{ height:22vh; min-height:132px; }
+  .paper--cardRsvp{ padding:9px 11px; }
+  .heroTitle--overImage{ font-size:24px; }
+  .heroSub--small{ font-size:17px; }
+  .inviteName{ font-size:15.5px; }
+  .lead{ font-size:12px; }
+  .btn{ padding:9px 14px; }
 }
