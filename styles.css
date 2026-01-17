@@ -269,7 +269,7 @@ body{
   color:var(--green2);
   text-align:center;
 }
-.heroSub--small{ font-size:18px; } /* was 20px */
+.heroSub--small{ font-size:22px; } /* was 20px */
 
 .inviteName{
   margin:1px 0 2px;
