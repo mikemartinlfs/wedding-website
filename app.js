@@ -1,37 +1,39 @@
+// app.js
 const qs=new URLSearchParams(location.search);
 const token=(qs.get("t") || "").trim();
 
 const invalidScreen=document.getElementById("invalidScreen");
-const invalidToken=document.getElementById("invalidToken");
-
 const rsvpScreen=document.getElementById("rsvpScreen");
 const homeScreen=document.getElementById("homeScreen");
 
+const rsvpForm=document.getElementById("rsvpForm");
 const inviteNameEl=document.getElementById("inviteName");
 const inviteSubEl=document.getElementById("inviteSub");
-
-const rsvpForm=document.getElementById("rsvpForm");
-const ageBlock=document.getElementById("ageBlock");
 const submitMsg=document.getElementById("submitMsg");
+const ageBlock=document.getElementById("ageBlock");
 
 const confirmedMeta=document.getElementById("confirmedMeta");
 const c_attending=document.getElementById("c_attending");
 const c_guest_count=document.getElementById("c_guest_count");
 const c_guest_ages=document.getElementById("c_guest_ages");
 const c_notes=document.getElementById("c_notes");
-
 const editBtn=document.getElementById("editBtn");
-const countdownText=document.getElementById("countdownText");
+
+const tabLinks=Array.from(document.querySelectorAll(".tabLink"));
 
 let HAS_CHILDREN=false;
-let didInitialLandingScroll=false;
 
 function show(el,on){ el?.classList.toggle("hidden",!on); }
 
-function scrollToId(id,behavior="smooth"){
-  const el=document.getElementById(id);
-  if(!el) return;
-  el.scrollIntoView({ behavior, block:"start" });
+function setCountdown(){
+  const targets=document.querySelectorAll('[id="countdownText"]');
+  const eventDate=new Date("2026-04-26T15:00:00-04:00"); // ceremony start local
+  const now=new Date();
+  const ms=eventDate.getTime() - now.getTime();
+  const days=Math.max(0, Math.ceil(ms / (1000*60*60*24)));
+  for(const el of targets){
+    el.textContent=`${days} DAYS TO GO!`;
+  }
 }
 
 async function apiGet(url){
@@ -52,71 +54,29 @@ async function apiPost(url,body){
   catch{ return { ok:r.ok,status:r.status,data:{ raw:txt } }; }
 }
 
-function setInviteHeader(name){
-  if(inviteNameEl) inviteNameEl.textContent=name ? `${name}, will you join us in this new chapter?` : "Will you join us in this new chapter?";
-  if(inviteSubEl) inviteSubEl.textContent="";
-}
-
 function clearSubmitMsg(){
   if(!submitMsg) return;
   submitMsg.textContent="";
   submitMsg.classList.add("hidden");
 }
 
-function resetRsvpFormToBlank(){
+function setHeader(name){
+  if(!inviteNameEl) return;
+  inviteNameEl.textContent=name ? `${name}, will you join us in this new chapter?` : "Will you join us in this new chapter?";
+  if(inviteSubEl) inviteSubEl.textContent="";
+}
+
+function setFormValues(resp){
   if(!rsvpForm) return;
 
-  const radios=rsvpForm.querySelectorAll('input[type="radio"][name="attending"]');
-  for(const r of radios) r.checked=false;
+  const att=String(resp?.attending || "").trim().toLowerCase();
+  const yes=rsvpForm.querySelector('input[name="attending"][value="yes"]');
+  const no=rsvpForm.querySelector('input[name="attending"][value="no"]');
+  if(yes) yes.checked=att==="yes";
+  if(no) no.checked=att==="no";
 
-  rsvpForm.guest_count.value="";
-  if(rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
-  rsvpForm.notes.value="";
-}
-
-function updateAgeBlock(){
-  if(!ageBlock || !rsvpForm) return;
-
-  const gc=parseInt(String(rsvpForm.guest_count?.value || "0"),10);
-  const guestCount=Number.isNaN(gc) ? 0 : gc;
-
-  const shouldShow=HAS_CHILDREN && guestCount > 1;
-  ageBlock.classList.toggle("hidden",!shouldShow);
-
-  if(!shouldShow && rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
-}
-
-function applyAttendingValue(att){
-  if(!rsvpForm) return;
-  const val=String(att || "").trim().toLowerCase();
-
-  const radios=rsvpForm.querySelectorAll('input[type="radio"][name="attending"]');
-  for(const r of radios) r.checked=(r.value===val);
-}
-
-function readAttendingValue(){
-  if(!rsvpForm) return "";
-  const checked=rsvpForm.querySelector('input[type="radio"][name="attending"]:checked');
-  return checked ? String(checked.value || "").trim().toLowerCase() : "";
-}
-
-function applyRsvpPrefill(resp){
-  if(!rsvpForm) return;
-
-  const attending=String(resp?.attending || "").trim().toLowerCase();
-  applyAttendingValue((attending==="yes" || attending==="no") ? attending : "");
-
-  rsvpForm.guest_count.value=resp?.guest_count ?? "";
-  if(rsvpForm.guest_ages) rsvpForm.guest_ages.value=resp?.guest_ages ?? "";
-  rsvpForm.notes.value=resp?.notes ?? "";
-
-  updateAgeBlock();
-}
-
-function ensureDefaultPrefillWhenMissing(){
-  if(!rsvpForm) return;
-  if(!String(rsvpForm.guest_count.value || "").trim()) rsvpForm.guest_count.value="1";
-  updateAgeBlock();
+  if(rsvpForm.guest_count) rsvpForm.guest_count.value=resp?.guest_count ?? "";
+  if(rsvpForm.notes) rsvpForm.notes.value=resp?.notes ?? "";
 }
 
 function fillConfirmed(resp){
@@ -127,141 +87,130 @@ function fillConfirmed(resp){
   if(c_notes) c_notes.textContent=resp?.notes ?? "";
 }
 
-function showInvalid(msg){
-  if(invalidToken) invalidToken.textContent=msg || "This invitation link is missing or invalid.";
-  show(invalidScreen,true);
-  show(rsvpScreen,false);
-  show(homeScreen,false);
+function updateAgeBlock(){
+  if(!ageBlock || !rsvpForm) return;
+  const gc=parseInt(String(rsvpForm.guest_count?.value || "0"),10);
+  const guestCount=Number.isNaN(gc) ? 0 : gc;
+  const shouldShow=HAS_CHILDREN && guestCount > 1;
+  ageBlock.classList.toggle("hidden",!shouldShow);
 }
 
-function showValidScreens(){
-  show(invalidScreen,false);
-  show(rsvpScreen,true);
-  show(homeScreen,true);
+function setActiveTab(targetId){
+  for(const b of tabLinks){
+    b.classList.toggle("active", b.getAttribute("data-target")===targetId);
+  }
 }
 
-function updateCountdown(){
-  if(!countdownText) return;
-  const weddingISO="2026-04-26T00:00:00-05:00";
-  const target=Date.parse(weddingISO);
-  if(Number.isNaN(target)){ countdownText.textContent=""; return; }
-  const now=Date.now();
-  const diff=target-now;
-  const days=Math.ceil(diff/(1000*60*60*24));
-  countdownText.textContent=days>=0 ? `${days} DAYS TO GO!` : "JUST MARRIED";
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+
+  // Ensure the section is visible if it's one we sometimes hide
+  el.classList.remove("hidden");
+
+  setActiveTab(id);
+  el.scrollIntoView({ behavior:"smooth", block:"start" });
 }
+
+tabLinks.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const id=btn.getAttribute("data-target");
+    if(!id) return;
+    scrollToSection(id);
+  });
+});
 
 async function refreshStatus(){
-  updateCountdown();
+  setCountdown();
+
+  // Hide everything until we know
+  show(invalidScreen,false);
+  show(rsvpScreen,false);
+  show(homeScreen,false);
+  show(document.getElementById("details"),false);
+  show(document.getElementById("travel"),false);
+  show(document.getElementById("dress"),false);
+  show(document.getElementById("registry"),false);
 
   if(!token){
-    showInvalid("This invitation link is missing or invalid; please use the original link sent to access our wedding website.");
+    show(invalidScreen,true);
     return null;
   }
 
+  // Track opens (non-blocking)
   fetch(`/api/open?t=${encodeURIComponent(token)}`).catch(()=>{});
 
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
   if(!s.ok){
-    showInvalid(s.data?.error || `Error (${s.status})`);
+    show(invalidScreen,true);
     return null;
   }
 
   const info=s.data;
-
-  showValidScreens();
-
   HAS_CHILDREN=!!info.has_children;
 
-  setInviteHeader(info.name || "");
-
   if(!info.submitted){
-    clearSubmitMsg();
-    resetRsvpFormToBlank();
+    // Landing is RSVP, but keep the rest visible beneath for swipe-up
+    show(rsvpScreen,true);
+    show(homeScreen,true);
+    show(document.getElementById("details"),true);
+    show(document.getElementById("travel"),true);
+    show(document.getElementById("dress"),true);
+    show(document.getElementById("registry"),true);
 
-    if(info.defaults) applyRsvpPrefill(info.defaults);
-    else ensureDefaultPrefillWhenMissing();
+    setHeader(info.name);
+    setFormValues(info.defaults || null);
+    updateAgeBlock();
 
-    if(!didInitialLandingScroll){
-      didInitialLandingScroll=true;
-      scrollToId("rsvpScreen","auto");
-    }
-
+    // Start at top
+    rsvpScreen.scrollIntoView({ behavior:"auto", block:"start" });
     return info;
   }
 
-  fillConfirmed(info.response || null);
+  // Submitted: landing is Home; keep RSVP hidden unless they tap the RSVP tab or Edit
+  show(rsvpScreen,false);
+  show(homeScreen,true);
+  show(document.getElementById("details"),true);
+  show(document.getElementById("travel"),true);
+  show(document.getElementById("dress"),true);
+  show(document.getElementById("registry"),true);
 
   if(confirmedMeta){
     const ts=info.response?.updated_at || info.response?.submitted_at || "";
     confirmedMeta.textContent=ts ? `Last updated: ${ts}` : "";
   }
 
+  fillConfirmed(info.response);
   show(editBtn,!!info.can_edit);
 
-  if(!didInitialLandingScroll){
-    didInitialLandingScroll=true;
-    scrollToId("homeScreen","auto");
-  }
+  // Land at home
+  homeScreen.scrollIntoView({ behavior:"auto", block:"start" });
+  setActiveTab("homeScreen");
 
   return info;
 }
 
-/* Tabs click -> scroll */
-document.querySelectorAll(".tabLink[data-target]").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    const id=btn.getAttribute("data-target");
-    scrollToId(id,"smooth");
-  });
-});
-
-/* Highlight active tab based on scroll */
-const tabButtons=Array.from(document.querySelectorAll(".tabLink[data-target]"));
-const targetIds=Array.from(new Set(tabButtons.map(b=>b.getAttribute("data-target")).filter(Boolean)));
-const observed=targetIds.map(id=>document.getElementById(id)).filter(Boolean);
-
-function setActiveTab(id){
-  for(const b of tabButtons){
-    b.classList.toggle("active", b.getAttribute("data-target")===id);
-  }
-}
-
-if(observed.length){
-  const obs=new IntersectionObserver((entries)=>{
-    const visible=entries
-      .filter(e=>e.isIntersecting)
-      .sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-    if(!visible) return;
-    setActiveTab(visible.target.id);
-  }, { threshold:[0.35,0.55,0.75] });
-
-  observed.forEach(el=>obs.observe(el));
-}
-
-/* Edit RSVP -> go to RSVP and prefill saved response */
 editBtn?.addEventListener("click",async ()=>{
+  if(!token) return;
+
   const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
-  if(!s.ok){ showInvalid(s.data?.error || `Error (${s.status})`); return; }
+  if(!s.ok) return;
 
   const info=s.data;
-
   if(!info.can_edit){
-    await refreshStatus();
+    show(editBtn,false);
     return;
   }
 
-  setInviteHeader(info.name || "");
-  clearSubmitMsg();
-  resetRsvpFormToBlank();
-
-  if(info.response) applyRsvpPrefill(info.response);
-  else if(info.defaults) applyRsvpPrefill(info.defaults);
-  else ensureDefaultPrefillWhenMissing();
-
-  scrollToId("rsvpScreen","smooth");
+  show(rsvpScreen,true);
+  setHeader(info.name);
+  setFormValues(info.response || null);
+  updateAgeBlock();
+  scrollToSection("rsvpScreen");
 });
 
-/* Submit RSVP -> save -> refresh -> land on Home */
+rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
+
 rsvpForm?.addEventListener("submit",async (e)=>{
   e.preventDefault();
   clearSubmitMsg();
@@ -274,12 +223,14 @@ rsvpForm?.addEventListener("submit",async (e)=>{
     return;
   }
 
+  const attending=rsvpForm.querySelector('input[name="attending"]:checked')?.value || "";
+
   const payload={
     token,
-    attending: readAttendingValue(),
-    guest_count:rsvpForm.guest_count.value,
-    guest_ages:rsvpForm.guest_ages.value,
-    notes:rsvpForm.notes.value
+    attending,
+    guest_count:rsvpForm.guest_count?.value || "",
+    guest_ages:"", // kept for backend compatibility; you removed the input
+    notes:rsvpForm.notes?.value || ""
   };
 
   const r=await apiPost("/api/submit",payload);
@@ -298,8 +249,8 @@ rsvpForm?.addEventListener("submit",async (e)=>{
   }
 
   await refreshStatus();
-  scrollToId("homeScreen","smooth");
 });
 
-rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
+setCountdown();
+setInterval(setCountdown, 60_000);
 refreshStatus();
