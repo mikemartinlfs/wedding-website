@@ -29,6 +29,28 @@ let didInitialLandingScroll=false;
 
 function show(el,on){ el?.classList.toggle("hidden",!on); }
 
+function setFormValues(resp){
+  if(!rsvpForm) return;
+
+  const att=String(resp?.attending || "").trim().toLowerCase();
+
+  const nodes=rsvpForm.elements?.namedItem("attending");
+  if(nodes){
+    if(nodes instanceof RadioNodeList || Array.isArray(nodes) || nodes.length){
+      try{ nodes.value=att || ""; }catch{}
+      const radios=rsvpForm.querySelectorAll('input[type="radio"][name="attending"]');
+      for(const r of radios) r.checked=(r.value===att);
+    }else if(nodes.value !== undefined){
+      nodes.value=att || "";
+    }
+  }
+
+  rsvpForm.guest_count.value=resp?.guest_count ?? "";
+  rsvpForm.guest_ages.value=resp?.guest_ages ?? "";
+  rsvpForm.notes.value=resp?.notes ?? "";
+}
+
+
 function scrollToId(id,behavior="smooth"){
   const el=document.getElementById(id);
   if(!el) return;
