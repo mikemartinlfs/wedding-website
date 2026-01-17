@@ -258,8 +258,8 @@ body{
 }
 .heroTitle--overImage{
   color:rgba(255,255,255,.94);
-  text-shadow:0 10px 28px rgba(0,0,0,.42);
-  font-size:28px;     /* slightly smaller */
+  text-shadow:0 10px 40px rgba(0,0,0,.42);
+  font-size:40px;     /* slightly smaller */
   line-height:1.02;
 }
 
