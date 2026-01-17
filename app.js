@@ -14,7 +14,6 @@ const rsvpForm=document.getElementById("rsvpForm");
 const ageBlock=document.getElementById("ageBlock");
 const submitMsg=document.getElementById("submitMsg");
 
-const confirmedCard=document.getElementById("confirmedCard");
 const confirmedMeta=document.getElementById("confirmedMeta");
 const c_attending=document.getElementById("c_attending");
 const c_guest_count=document.getElementById("c_guest_count");
@@ -28,28 +27,6 @@ let HAS_CHILDREN=false;
 let didInitialLandingScroll=false;
 
 function show(el,on){ el?.classList.toggle("hidden",!on); }
-
-function setFormValues(resp){
-  if(!rsvpForm) return;
-
-  const att=String(resp?.attending || "").trim().toLowerCase();
-
-  const nodes=rsvpForm.elements?.namedItem("attending");
-  if(nodes){
-    if(nodes instanceof RadioNodeList || Array.isArray(nodes) || nodes.length){
-      try{ nodes.value=att || ""; }catch{}
-      const radios=rsvpForm.querySelectorAll('input[type="radio"][name="attending"]');
-      for(const r of radios) r.checked=(r.value===att);
-    }else if(nodes.value !== undefined){
-      nodes.value=att || "";
-    }
-  }
-
-  rsvpForm.guest_count.value=resp?.guest_count ?? "";
-  rsvpForm.guest_ages.value=resp?.guest_ages ?? "";
-  rsvpForm.notes.value=resp?.notes ?? "";
-}
-
 
 function scrollToId(id,behavior="smooth"){
   const el=document.getElementById(id);
@@ -88,7 +65,10 @@ function clearSubmitMsg(){
 
 function resetRsvpFormToBlank(){
   if(!rsvpForm) return;
-  rsvpForm.attending.value="";
+
+  const radios=rsvpForm.querySelectorAll('input[type="radio"][name="attending"]');
+  for(const r of radios) r.checked=false;
+
   rsvpForm.guest_count.value="";
   if(rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
   rsvpForm.notes.value="";
@@ -106,20 +86,29 @@ function updateAgeBlock(){
   if(!shouldShow && rsvpForm.guest_ages) rsvpForm.guest_ages.value="";
 }
 
+function applyAttendingValue(att){
+  if(!rsvpForm) return;
+  const val=String(att || "").trim().toLowerCase();
+
+  const radios=rsvpForm.querySelectorAll('input[type="radio"][name="attending"]');
+  for(const r of radios) r.checked=(r.value===val);
+}
+
+function readAttendingValue(){
+  if(!rsvpForm) return "";
+  const checked=rsvpForm.querySelector('input[type="radio"][name="attending"]:checked');
+  return checked ? String(checked.value || "").trim().toLowerCase() : "";
+}
+
 function applyRsvpPrefill(resp){
   if(!rsvpForm) return;
 
   const attending=String(resp?.attending || "").trim().toLowerCase();
-  const safeAttending=(attending==="yes" || attending==="no") ? attending : "";
+  applyAttendingValue((attending==="yes" || attending==="no") ? attending : "");
 
-  const guest_count=resp?.guest_count ?? "";
-  const guest_ages=resp?.guest_ages ?? "";
-  const notes=resp?.notes ?? "";
-
-  rsvpForm.attending.value=safeAttending;
-  rsvpForm.guest_count.value=String(guest_count);
-  if(rsvpForm.guest_ages) rsvpForm.guest_ages.value=String(guest_ages);
-  rsvpForm.notes.value=String(notes);
+  rsvpForm.guest_count.value=resp?.guest_count ?? "";
+  if(rsvpForm.guest_ages) rsvpForm.guest_ages.value=resp?.guest_ages ?? "";
+  rsvpForm.notes.value=resp?.notes ?? "";
 
   updateAgeBlock();
 }
@@ -184,19 +173,12 @@ async function refreshStatus(){
 
   HAS_CHILDREN=!!info.has_children;
 
-  // Always restore personalization
   setInviteHeader(info.name || "");
 
   if(!info.submitted){
-    show(confirmedCard,false);
-    show(editBtn,false);
-
     clearSubmitMsg();
     resetRsvpFormToBlank();
 
-    // Restore prefill behavior:
-    // - if defaults exist, use them
-    // - otherwise default guest_count to 1
     if(info.defaults) applyRsvpPrefill(info.defaults);
     else ensureDefaultPrefillWhenMissing();
 
@@ -208,8 +190,6 @@ async function refreshStatus(){
     return info;
   }
 
-  // Submitted: show summary + edit button (if allowed)
-  show(confirmedCard,true);
   fillConfirmed(info.response || null);
 
   if(confirmedMeta){
@@ -235,73 +215,7 @@ document.querySelectorAll(".tabLink[data-target]").forEach(btn=>{
   });
 });
 
-/* Edit RSVP -> go to RSVP and prefill saved response */
-editBtn?.addEventListener("click",async ()=>{
-  const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
-  if(!s.ok){ showInvalid(s.data?.error || `Error (${s.status})`); return; }
-
-  const info=s.data;
-
-  if(!info.can_edit){
-    await refreshStatus();
-    return;
-  }
-
-  setInviteHeader(info.name || "");
-  clearSubmitMsg();
-  resetRsvpFormToBlank();
-
-  // Prefill from saved RSVP response
-  if(info.response) applyRsvpPrefill(info.response);
-  else if(info.defaults) applyRsvpPrefill(info.defaults);
-  else ensureDefaultPrefillWhenMissing();
-
-  scrollToId("rsvpScreen","smooth");
-});
-
-/* Submit RSVP -> save -> refresh -> land on Welcome */
-rsvpForm?.addEventListener("submit",async (e)=>{
-  e.preventDefault();
-  clearSubmitMsg();
-
-  if(!token){
-    if(submitMsg){
-      submitMsg.textContent="Missing invite token.";
-      submitMsg.classList.remove("hidden");
-    }
-    return;
-  }
-
-  const payload={
-    token,
-    attending:rsvpForm.attending.value,
-    guest_count:rsvpForm.guest_count.value,
-    guest_ages:rsvpForm.guest_ages.value,
-    notes:rsvpForm.notes.value
-  };
-
-  const r=await apiPost("/api/submit",payload);
-  if(!r.ok){
-    if(submitMsg){
-      submitMsg.textContent=r.data?.error || `Submit failed (${r.status})`;
-      submitMsg.classList.remove("hidden");
-    }
-    return;
-  }
-
-  if(submitMsg){
-    submitMsg.textContent="RSVP saved.";
-    submitMsg.classList.remove("hidden");
-  }
-
-  await refreshStatus();
-  scrollToId("homeScreen","smooth");
-});
-
-rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
-rsvpForm?.attending?.addEventListener("change",updateAgeBlock);
-
-/* Active underline based on scroll position */
+/* Highlight active tab based on scroll */
 const tabButtons=Array.from(document.querySelectorAll(".tabLink[data-target]"));
 const targetIds=Array.from(new Set(tabButtons.map(b=>b.getAttribute("data-target")).filter(Boolean)));
 const observed=targetIds.map(id=>document.getElementById(id)).filter(Boolean);
@@ -324,5 +238,68 @@ if(observed.length){
   observed.forEach(el=>obs.observe(el));
 }
 
-updateCountdown();
+/* Edit RSVP -> go to RSVP and prefill saved response */
+editBtn?.addEventListener("click",async ()=>{
+  const s=await apiGet(`/api/status?t=${encodeURIComponent(token)}`);
+  if(!s.ok){ showInvalid(s.data?.error || `Error (${s.status})`); return; }
+
+  const info=s.data;
+
+  if(!info.can_edit){
+    await refreshStatus();
+    return;
+  }
+
+  setInviteHeader(info.name || "");
+  clearSubmitMsg();
+  resetRsvpFormToBlank();
+
+  if(info.response) applyRsvpPrefill(info.response);
+  else if(info.defaults) applyRsvpPrefill(info.defaults);
+  else ensureDefaultPrefillWhenMissing();
+
+  scrollToId("rsvpScreen","smooth");
+});
+
+/* Submit RSVP -> save -> refresh -> land on Home */
+rsvpForm?.addEventListener("submit",async (e)=>{
+  e.preventDefault();
+  clearSubmitMsg();
+
+  if(!token){
+    if(submitMsg){
+      submitMsg.textContent="Missing invite token.";
+      submitMsg.classList.remove("hidden");
+    }
+    return;
+  }
+
+  const payload={
+    token,
+    attending: readAttendingValue(),
+    guest_count:rsvpForm.guest_count.value,
+    guest_ages:rsvpForm.guest_ages.value,
+    notes:rsvpForm.notes.value
+  };
+
+  const r=await apiPost("/api/submit",payload);
+
+  if(!r.ok){
+    if(submitMsg){
+      submitMsg.textContent=r.data?.error || `Submit failed (${r.status})`;
+      submitMsg.classList.remove("hidden");
+    }
+    return;
+  }
+
+  if(submitMsg){
+    submitMsg.textContent="RSVP saved.";
+    submitMsg.classList.remove("hidden");
+  }
+
+  await refreshStatus();
+  scrollToId("homeScreen","smooth");
+});
+
+rsvpForm?.guest_count?.addEventListener("input",updateAgeBlock);
 refreshStatus();
