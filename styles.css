@@ -406,6 +406,14 @@ textarea{
   background-position:center;
 }
 
+.travelMap{
+  background:none;
+  border:none;
+  border-radius:0;
+  padding:0;
+  box-shadow:none;
+}
+
 /* Confirmed card */
 .confirmed{
   margin-top:12px;
