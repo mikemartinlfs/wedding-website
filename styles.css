@@ -171,6 +171,22 @@ body{
   box-shadow:none;
 }
 
+.mapWrap{
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+
+.travelMapImg{
+  width:100%;
+  max-width:100%;
+  height:auto;
+  display:block;
+
+  /* THIS is the magic */
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,.35));
+}
+
 .cardTitle{
   font-family:var(--fontHead);
   margin:0 0 6px;
