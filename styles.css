@@ -163,6 +163,14 @@ body{
   padding:9px;
 }
 
+.travelMap{
+  background:none;
+  border:none;
+  border-radius:0;
+  padding:0;
+  box-shadow:none;
+}
+
 .cardTitle{
   font-family:var(--fontHead);
   margin:0 0 6px;
@@ -404,14 +412,6 @@ textarea{
 .fullBleedBanner--map{
   height:230px;
   background-position:center;
-}
-
-.travelMap{
-  background:none;
-  border:none;
-  border-radius:0;
-  padding:0;
-  box-shadow:none;
 }
 
 /* Confirmed card */
