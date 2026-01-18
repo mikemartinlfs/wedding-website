@@ -559,7 +559,6 @@ textarea{
   height:auto;
   display:block;
 
-  /* Sepia, aged paper feel */
   filter:
     sepia(65%)
     saturate(85%)
@@ -567,6 +566,5 @@ textarea{
     brightness(.98)
     drop-shadow(6px 9px 12px rgba(0,0,0,.28));
 
-  /* Slight grounding */
   transform: translateY(1px);
 }
