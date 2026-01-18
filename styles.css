@@ -183,7 +183,10 @@ body{
   height:auto;
   display:block;
 
-  filter: drop-shadow(6px 8px 12px rgba(0,0,0,.28));
+  filter:
+  drop-shadow(2px 3px 4px rgba(0,0,0,.35))
+  drop-shadow(6px 8px 10px rgba(0,0,0,.18));
+
 }
 
 
