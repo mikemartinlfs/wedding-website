@@ -513,3 +513,31 @@ textarea{
   .lead{ font-size:12px; }
   .btn{ padding:9px 14px; }
 }
+
+/* =========================
+   DRESS SECTION IMAGE
+   ========================= */
+
+.dressImageWrap{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin:6px 0 10px;
+}
+
+.dressImage{
+  width:100%;
+  max-width:100%;
+  height:auto;
+  display:block;
+
+  /* Grayscale, slightly softened */
+  filter:
+    grayscale(100%)
+    contrast(1.05)
+    brightness(.98)
+    drop-shadow(6px 8px 12px rgba(0,0,0,.25));
+
+  /* Grounded, not glowing */
+  transform: translateY(1px);
+}
