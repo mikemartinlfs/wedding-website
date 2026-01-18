@@ -271,14 +271,20 @@ body{
 }
 .heroSign{
   position:absolute;
-  right:6%;
-  bottom:-36px;
-  width:min(260px, 70vw);
-  max-width:320px;
-  filter: drop-shadow(8px 10px 12px rgba(0,0,0,.35));
+  /* Pin it consistently within the hero */
+  top:clamp(60px, 9vh, 92px);
+  right:clamp(10px, 4vw, 28px);
+  /* Size scales predictably */
+  width:clamp(140px, 36vw, 220px);
+  height:auto;
+  /* Make it “pop out” slightly */
+  transform: rotate(-2deg) translateY(18%);
+  /* Realistic one-direction shadow */
+  filter: drop-shadow(6px 10px 10px rgba(0,0,0,.35));
   z-index:3;
   pointer-events:none;
 }
+
 .rsvpHeroTitleWrap{
   position:absolute;
   inset:0;
