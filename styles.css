@@ -272,7 +272,7 @@ body{
 .heroSign{
   position:absolute;
   /* Pin it consistently within the hero */
-  top:clamp(60px, 9vh, 92px);
+  top:clamp(80px, 11vh, 120px);
   right:clamp(10px, 4vw, 28px);
   /* Size scales predictably */
   width:clamp(140px, 36vw, 220px);
