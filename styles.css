@@ -541,3 +541,32 @@ textarea{
   /* Grounded, not glowing */
   transform: translateY(1px);
 }
+
+/* =========================
+   REGISTRY – BOOKS IMAGE
+   ========================= */
+
+.booksImageWrap{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin:6px 0 10px;
+}
+
+.booksImage{
+  width:100%;
+  max-width:100%;
+  height:auto;
+  display:block;
+
+  /* Sepia, aged paper feel */
+  filter:
+    sepia(65%)
+    saturate(85%)
+    contrast(1.05)
+    brightness(.98)
+    drop-shadow(6px 9px 12px rgba(0,0,0,.28));
+
+  /* Slight grounding */
+  transform: translateY(1px);
+}
