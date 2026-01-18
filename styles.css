@@ -417,7 +417,9 @@ textarea{
 /* Travel map banner — no framing, no card feel */
 .fullBleedBanner--map{
   border:none;
-  box-shadow:none;
+  box-shadow:
+    inset 0 -1px 0 rgba(0,0,0,.25),   /* bottom contact line */
+    inset 0 1px 0 rgba(255,255,255,.12); /* top paper edge */
   height:230px;
   background-position:center;
 }
