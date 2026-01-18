@@ -35,13 +35,15 @@
 
     <!-- RSVP (landing if not submitted) -->
     <section id="rsvpScreen" class="section section--rsvp hidden">
+      <!-- Full-bleed hero aligned to top corners -->
       <div class="rsvpHeroFullBleed" style="background-image:url('assets/hero.jpg');">
         <div class="rsvpHeroTitleWrap">
           <h1 class="heroTitle heroTitle--overImage">One Invitation to Gather Them All</h1>
         </div>
-          <img src="assets/sign.png" alt="No admittance except on party business" class="heroSign"/>
+
+        <!-- Optional overlay sign (if you’re using assets/sign.jpg) -->
+        <!-- <img class="heroSign" src="assets/sign.jpg" alt="" aria-hidden="true" /> -->
       </div>
-      
 
       <div class="wrap">
         <div class="paper paper--card paper--cardRsvp">
@@ -59,6 +61,7 @@
 
               <div class="grid">
 
+                <!-- Attending inline: Attending?  ○ Yes  ○ No -->
                 <div class="inline-row full">
                   <div class="inline-row-label">Attending?</div>
                   <div class="inline-row-control">
@@ -73,14 +76,19 @@
                   </div>
                 </div>
 
+                <!-- Guest count inline -->
                 <div class="inline-row full">
                   <div class="inline-row-label">Number attending</div>
                   <input class="inline-input" name="guest_count" type="number" min="0" max="10" required />
                 </div>
 
+                <div id="ageBlock" class="full hidden">
+                  <p class="meta" style="margin:0 0 6px 0;">There will be a supervised kids’ area at the reception so kids and adults alike can enjoy the festivities.</p>
+                </div>
+
                 <label class="full">
                   Any special requests for your journey? <em>(Dietary needs, accessibility, or anything else we should know.)</em>
-                  <textarea name="notes" rows="2"></textarea>
+                  <textarea name="notes" rows="3"></textarea>
                 </label>
 
               </div>
@@ -99,7 +107,7 @@
     </section>
 
     <!-- HOME (landing if submitted) -->
-    <section id="homeScreen" class="section section--editorial hidden">
+    <section id="homeScreen" class="section section--editorial">
       <div class="wrap">
         <div class="siteHeader">
           <div class="siteTitle">MICHAEL &amp; AVNEET</div>
@@ -121,10 +129,11 @@
 
         <div class="content">
           <h2 class="sectionTitle">WELCOME</h2>
+
           <div class="fullBleedBanner" style="background-image:url('assets/details.jpg');"></div>
 
           <div class="bodyText">
-            <p class="bodyP">Use the tabs above to jump to a section, or keep scrolling.</p>
+            <p class="bodyP">Everything you’ll need is below. Use the tabs above to jump to a section, or keep scrolling.</p>
           </div>
 
           <div class="confirmed" id="confirmedCard">
@@ -153,34 +162,29 @@
           <h2 class="sectionTitle">DETAILS</h2>
 
           <div class="card">
-            <h3 class="cardTitle">The Gathering</h3>
+            <h3 class="cardTitle">Ceremony &amp; Reception</h3>
 
             <div class="cardBlock">
               <div class="kvRow">
-                <div class="kvKey">Ceremony</div>
-                <div class="kvVal">3:00 PM</div>
+                <div class="kvKey">Venue</div>
+                <div class="kvVal">Elegance Estates, 2268 Courthouse Rd, Stafford, VA 22554</div>
               </div>
+
+              <div class="kvRow">
+                <div class="kvKey">Ceremony</div>
+                <div class="kvVal">3:00 PM (outdoors)</div>
+              </div>
+
               <div class="kvRow">
                 <div class="kvKey">Reception</div>
-                <div class="kvVal">Immediately following</div>
+                <div class="kvVal">Immediately after — same location</div>
               </div>
+
               <div class="kvRow">
-                <div class="kvKey">Location</div>
-                <div class="kvVal">
-                  Elegance Estates<br/>
-                  2268 Courthouse Rd<br/>
-                  Stafford, VA 22554
-                </div>
-              </div>
-              <div class="kvRow">
-                <div class="kvKey">Setting</div>
-                <div class="kvVal">Outdoors (weather permitting)</div>
+                <div class="kvKey">Kids</div>
+                <div class="kvVal">A supervised kids’ area will be available so parents and kids alike can enjoy the festivities.</div>
               </div>
             </div>
-
-            <p class="bodyP">
-              There will be a <strong>supervised kids’ area</strong> during the reception so parents and kids alike can enjoy the festivities.
-            </p>
           </div>
 
         </div>
@@ -193,9 +197,7 @@
         <div class="content">
           <h2 class="sectionTitle">TRAVEL</h2>
 
-          <!-- Re-added Travel image -->
-          <div class="mapWrap"><img src="assets/travel.jpg" alt="Map of Northern Virginia" class="travelMapImg"></div>
-
+          <div class="fullBleedBanner fullBleedBanner--map" style="background-image:url('assets/travel.jpg');"></div>
 
           <div class="card travelMap">
             <h3 class="cardTitle">The Road There</h3>
@@ -216,7 +218,6 @@
               <li>Staybridge Suites Quantico–Stafford</li>
             </ul>
           </div>
-
         </div>
       </div>
     </section>
@@ -227,18 +228,25 @@
         <div class="content">
           <h2 class="sectionTitle">DRESS</h2>
 
+          <!-- Grayscale editorial plate -->
+          <figure class="photoPlate">
+            <div class="photoPlateImg" style="background-image:url('assets/dress.jpg');"></div>
+            <figcaption class="photoPlateCap">Dressy casual — a range, not a rule.</figcaption>
+          </figure>
+
           <div class="card">
-            <h3 class="cardTitle">Attire for the Occasion</h3>
+            <h3 class="cardTitle">Dressy Casual</h3>
 
             <p class="bodyP">
-              The dress code is <strong>semi-formal</strong>. No tuxedos needed.
+              Think of it as a comfortable middle path: <strong>above jeans</strong>, and <strong>below tuxedos and ball gowns</strong> —
+              unless you feel like arriving in full regalia, in which case we won’t stop you.
             </p>
 
             <p class="bodyP">
-              Think polished, comfortable, and ready for a joyful outdoor celebration.
+              A simple dress, a skirt and blouse, slacks with a button-down, a nice jumpsuit — all welcome.
+              We’re aiming for a fun celebration rather than something stiff or formal.
             </p>
           </div>
-
         </div>
       </div>
     </section>
@@ -250,17 +258,13 @@
           <h2 class="sectionTitle">REGISTRY</h2>
 
           <div class="card">
-            <h3 class="cardTitle">A Different Kind of Gift</h3>
-
-            <p class="bodyP">Your presence is the greatest gift we could ask for.</p>
-
+            <h3 class="cardTitle">No Gifts — One Book</h3>
             <p class="bodyP">
-              If you’d like to bring something, we invite you to bring <strong>one book</strong> that holds meaning to you.
-              Inside the cover, please write a note, a memory, a wish, or a few words of your choosing.
+              We truly don’t need wedding gifts. If you’d like to bring something, bring <strong>one book</strong> that means something to you —
+              a story you’ve loved, a book that helped you, or a favorite you’d recommend to a fellow traveler.
             </p>
-
             <p class="bodyP">
-              These books will become part of our shared library — each one a reminder of the people who walked with us on this journey.
+              Please sign the inside cover with a note (anything you’d like). We’ll build our little library one well-loved volume at a time.
             </p>
           </div>
 
