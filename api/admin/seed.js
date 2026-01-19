@@ -13,13 +13,13 @@ export default async function handler(req, res){
 
     const redis=getRedis(true);
 
+    // Rebuild the token index as a SET every time.
+    // This also fixes WRONGTYPE if the key was previously created as a string/list/etc.
+    await redis.del("invites:tokens");
+
     let written=0;
     const skipped=[];
-    const tokenIndexKey="invites:tokens";
-
-    // pull existing token list (if any)
-    const existing=await redis.get(tokenIndexKey);
-    const tokenSet=new Set(Array.isArray(existing) ? existing.map(t=>String(t)) : []);
+    const tokensToAdd=[];
 
     for(const inv of invites){
       const token=String(inv?.token || "").trim();
@@ -28,10 +28,10 @@ export default async function handler(req, res){
       const has_children=!!inv?.has_children;
 
       const defaults=(inv?.defaults && typeof inv.defaults==="object") ? {
-        attending: String(inv.defaults.attending || "").trim(),
-        guest_count: String(inv.defaults.guest_count || "").trim(),
-        guest_ages: String(inv.defaults.guest_ages || "").trim(),
-        notes: String(inv.defaults.notes || "").trim()
+        attending:String(inv.defaults.attending || "").trim(),
+        guest_count:String(inv.defaults.guest_count || "").trim(),
+        guest_ages:String(inv.defaults.guest_ages || "").trim(),
+        notes:String(inv.defaults.notes || "").trim()
       } : null;
 
       if(!token || !name){
@@ -40,14 +40,17 @@ export default async function handler(req, res){
       }
 
       await redis.set(`invite:${token}`, { name, contact, has_children, defaults });
-      tokenSet.add(token);
+      tokensToAdd.push(token);
       written++;
     }
 
-    // write back the token index (sorted for stability)
-    await redis.set(tokenIndexKey, Array.from(tokenSet).sort());
+    // Create the index set
+    if(tokensToAdd.length){
+      // Upstash client supports SADD via redis.sadd(...)
+      await redis.sadd("invites:tokens", ...tokensToAdd);
+    }
 
-    return res.status(200).json({ ok:true, count:written, skipped, token_index_count:tokenSet.size });
+    return res.status(200).json({ ok:true, count:written, skipped, indexed:tokensToAdd.length });
   } catch(e){
     return res.status(500).json({ error:e?.message || String(e) });
   }
