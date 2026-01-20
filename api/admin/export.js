@@ -9,50 +9,21 @@ export default async function handler(req, res){
 
     const redis=getRedis(true);
 
-    // tokens index must be a SET
-    let tokens=[];
-    try{
-      tokens=await redis.smembers("invites:tokens");
-    } catch(e){
-      // If it's still the wrong type, give a clean error
-      return res.status(500).json({
-        error:`Export failed reading invites:tokens. ${e?.message || String(e)}`
-      });
-    }
+    // tokens live in a SET (seed.js rebuilds this)
+    const tokens=await redis.smembers("invites:tokens");
 
-    tokens=(tokens || []).map(t=>String(t)).filter(Boolean).sort();
-
-    if(tokens.length===0){
-      return res.status(200).json({ ok:true, tokens:[], rows:[] });
-    }
-
-    // Pipeline to fetch everything quickly
-    const pipe=redis.pipeline();
-
-    for(const t of tokens){
-      pipe.get(`invite:${t}`);
-      pipe.get(`rsvp:${t}`);
-      pipe.get(`submitted_at:${t}`);
-      pipe.get(`last_open:${t}`);
-      pipe.get(`open_count:${t}`);
-    }
-
-    const out=await pipe.exec();
-
-    // out is an array of results in the order queued
     const rows=[];
-    for(let i=0;i<tokens.length;i++){
-      const t=tokens[i];
-      const base=i*5;
+    for(const token of tokens){
+      const invite=await redis.get(`invite:${token}`);
+      const rsvp=await redis.get(`rsvp:${token}`);
 
-      const invite=out[base]?.result || null;
-      const rsvp=out[base+1]?.result || null;
-      const submitted_at=out[base+2]?.result || "";
-      const last_open=out[base+3]?.result || "";
-      const open_count=out[base+4]?.result ?? "";
+      const submittedAt=await redis.get(`submitted_at:${token}`);
+      const lastOpen=await redis.get(`last_open:${token}`);
+      const openCount=await redis.get(`open_count:${token}`);
 
       rows.push({
-        token:t,
+        token,
+
         name:invite?.name || "",
         contact:invite?.contact || invite?.email || "",
         has_children:!!invite?.has_children,
@@ -64,11 +35,14 @@ export default async function handler(req, res){
         notes:rsvp?.notes || "",
         updated_at:rsvp?.updated_at || "",
 
-        submitted_at:submitted_at || "",
-        last_open:last_open || "",
-        open_count:String(open_count ?? "")
+        submitted_at:submittedAt || "",
+        last_open:lastOpen || "",
+        open_count:openCount || ""
       });
     }
+
+    // Stable ordering
+    rows.sort((a,b)=>String(a.token).localeCompare(String(b.token)));
 
     return res.status(200).json({ ok:true, tokens, rows });
   } catch(e){
